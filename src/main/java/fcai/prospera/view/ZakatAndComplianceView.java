@@ -1,0 +1,36 @@
+package fcai.prospera.view;
+
+import fcai.prospera.controller.ZakatAndComplianceController;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+
+public class ZakatAndComplianceView {
+    private ZakatAndComplianceController controller;
+
+    private TableView<?> complianceTable;
+    private Button calculateZakatButton;
+    private Label resultLabel;
+
+    public ZakatAndComplianceView(ZakatAndComplianceController controller) {
+        this.controller = controller;
+        initializeUI();
+    }
+
+    private void initializeUI() {
+        complianceTable = new TableView<>();
+        calculateZakatButton = new Button("Calculate Zakat");
+        resultLabel = new Label();
+
+        VBox root = new VBox(10, complianceTable, calculateZakatButton, resultLabel);
+
+        calculateZakatButton.setOnAction(e -> controller.handleCalculateZakat());
+    }
+
+    public void displayZakatResult(double amount) {
+        resultLabel.setText("Zakat payable: " + amount);
+    }
+
+    public void displayComplianceStatus(boolean isCompliant) {
+        resultLabel.setText("Sharia compliance: " + (isCompliant ? "✅ Valid" : "❌ Invalid"));
+    }
+}
