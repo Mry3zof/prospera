@@ -5,6 +5,8 @@ import fcai.prospera.model.Asset;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class AssetView {
     private AssetController controller;
 
@@ -35,7 +37,7 @@ public class AssetView {
         statusLabel.setText("Failed to add asset.");
     }
 
-    public void refreshAssetsList() {
+    public void refreshAssetsList(List<Asset> assets) {
         statusLabel.setText("Assets refreshed.");
     }
 }

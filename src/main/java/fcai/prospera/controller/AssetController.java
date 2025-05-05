@@ -30,11 +30,11 @@ public class AssetController {
     }
 
     public boolean removeAsset(UUID assetId) {
-        return assetService.deleteAsset(assetId);
+        return assetService.removeAsset(assetId);
     }
 
     public List<Asset> getAssets(UUID userId) {
-        return assetService.getUserAssets(userId);
+        return assetService.getAssets(userId);
     }
 
     public void assetsChanged() {
@@ -42,6 +42,6 @@ public class AssetController {
     }
 
     public BigDecimal getNetWorth(UUID userId) {
-        return assetService.calculateNetWorth(userId);
+        return assetService.calculateValuation(userId);
     }
 }
