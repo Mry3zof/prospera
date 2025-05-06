@@ -10,13 +10,15 @@ import java.util.UUID;
 
 public class ZakatAndComplianceService {
     private final AssetRepository assetRepo;
+    private final UserRepository userRepo;
 
-    public ZakatAndComplianceService(AssetRepository assetRepo) {
+    public ZakatAndComplianceService(AssetRepository assetRepo, UserRepository userRepo) {
         this.assetRepo = assetRepo;
+        this.userRepo = userRepo;
     }
 
     public BigDecimal calculateZakat(UUID userId) {
-        List<Asset> assets = assetRepo.getUserAssets(userId);
+        List<Asset> assets = userRepo.findByUserId(userId);
         return BigDecimal.ZERO;
     }
 

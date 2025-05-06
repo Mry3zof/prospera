@@ -32,12 +32,12 @@ public class ReportsView {
                 reportOutput
         );
 
-        generateReportButton.setOnAction(e -> {
-            ReportType selectedType = reportTypeComboBox.getValue();
-            if (selectedType != null) {
-                controller.handleGenerateReport(selectedType);
-            }
-        });
+//        generateReportButton.setOnAction(e -> {
+//            ReportType selectedType = reportTypeComboBox.getValue();
+//            if (selectedType != null) {
+//                controller.handleGenerateReport(selectedType);
+//            }
+//        });
     }
 
     public void displayReport(String reportContent) {

@@ -31,6 +31,6 @@ public class ZakatAndComplianceView {
     }
 
     public void displayComplianceStatus(boolean isCompliant) {
-//        resultLabel.setText("Sharia compliance: " + (isCompliant ? "✅ Valid" : "❌ Invalid"));
+        resultLabel.setText("Sharia compliance: " + (isCompliant ? "✅ Valid" : "❌ Invalid"));
     }
 }

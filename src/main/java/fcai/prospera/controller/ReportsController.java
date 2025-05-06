@@ -18,20 +18,20 @@ public class ReportsController {
         this.reportsView = reportsView;
     }
 
-    public byte[] generateReport(ReportType type, String format) {
-        byte[] report = reportService.generateReport(
-                authService.getCurrentUser().getId(),
-                type,
-                format
-        );
-        reportsView.displayReport("Report generated");
-        return report;
-    }
-
-    public boolean exportReport(String format) {
-        return reportService.exportReport(
-                authService.getCurrentUser().getId(),
-                format
-        );
-    }
+//    public byte[] generateReport(ReportType type, String format) {
+//        byte[] report = reportService.generateReport(
+//                authService.getCurrentUser().getId(),
+//                type,
+//                format
+//        );
+//        reportsView.displayReport("Report generated");
+//        return report;
+//    }
+//
+//    public boolean exportReport(String format) {
+//        return reportService.exportReport(
+//                authService.getCurrentUser().getId(),
+//                format
+//        );
+//    }
 }

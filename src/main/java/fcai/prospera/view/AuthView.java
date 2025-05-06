@@ -32,7 +32,7 @@ public class AuthView {
         loginButton.setOnAction(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
-            controller.handleLogin(username, password);
+            controller.login(username, password);
         });
     }
 

@@ -9,10 +9,6 @@ public class AuthController {
     private final AuthService authService;
     private final AuthView authView;
 
-    public AuthController() {
-        this(null, null);
-    }
-
     public AuthController(AuthService authService, AuthView authView) {
         this.authService = authService;
         this.authView = authView;

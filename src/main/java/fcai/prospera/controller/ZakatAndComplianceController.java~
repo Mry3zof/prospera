@@ -27,18 +27,18 @@ public class ZakatAndComplianceController {
     }
 
     public BigDecimal calculateZakat(UUID userId, Date dueDate) {
-        BigDecimal amount = zakatService.calculateZakat(userId);
+        BigDecimal amount = zakatService.calculateZakat(userId, dueDate);
         zakatView.displayZakatResult(amount.doubleValue());
         return amount;
     }
 
-//    public ComplianceStatus getComplianceStatus(UUID userId) {
-//        ComplianceStatus status = zakatService.checkCompliance(userId);
-//        zakatView.displayComplianceStatus(status.isCompliant());
-//        return status;
-//    }
+    public ComplianceStatus getComplianceStatus(UUID userId) {
+        ComplianceStatus status = zakatService.checkCompliance(userId);
+        zakatView.displayComplianceStatus(status.isCompliant());
+        return status;
+    }
 
-//    public Report generateZakatReport(String format) {
-//        return reportService.generateZakatReport(authService.getCurrentUser().getId(), format);
-//    }
+    public Report generateZakatReport(String format) {
+        return reportService.generateZakatReport(authService.getCurrentUser().getId(), format);
+    }
 }

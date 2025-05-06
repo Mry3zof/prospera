@@ -6,7 +6,4 @@ module fcai.prospera {
     opens fcai.prospera to javafx.fxml;
     exports fcai.prospera;
     exports fcai.prospera.controller;
-    exports fcai.prospera.model;
-    exports fcai.prospera.service;
-    exports fcai.prospera.view;
 }
