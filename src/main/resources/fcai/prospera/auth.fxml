@@ -19,13 +19,13 @@
             </Label>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" text="Login">
+                  <Button mnemonicParsing="false" onAction="#showLoginView" text="Login">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Button>
                   <Separator prefHeight="5.0" prefWidth="0.0" visible="false" />
-                  <Button mnemonicParsing="false" text="Sign Up">
+                  <Button mnemonicParsing="false" onAction="#showSignupView" text="Sign Up">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>

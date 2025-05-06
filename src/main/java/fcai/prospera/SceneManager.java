@@ -1,6 +1,7 @@
 package fcai.prospera;
 
 import fcai.prospera.controller.AuthController;
+import fcai.prospera.controller.DashboardController;
 import fcai.prospera.repository.AssetRepository;
 import fcai.prospera.service.AssetService;
 import fcai.prospera.service.AuthService;
@@ -58,6 +59,12 @@ public class SceneManager {
     public void showSignupview() throws IOException {
         switchScene("auth-signup.fxml", controller -> {
             ((AuthController) controller).init(this, authService);
+        });
+    }
+
+    public void showDashboardView() throws IOException {
+        switchScene("dashboard.fxml", controller -> {
+            ((DashboardController) controller).init(this, authService);
         });
     }
 }
