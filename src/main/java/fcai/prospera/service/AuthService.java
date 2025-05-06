@@ -19,7 +19,7 @@ public class AuthService {
     public void signup(String name, String email, String username, String password) {
     }
 
-    public void logout(UUID userId) {
+    public void logout() {
     }
 
     public User getCurrentUser() {
