@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fcai.prospera.controller.AuthController">
+   <children>
+      <VBox alignment="CENTER" layoutX="118.0" layoutY="47.0" prefHeight="447.0" prefWidth="718.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="Create an Account" textAlignment="CENTER">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
+            <VBox maxWidth="200.0" prefHeight="54.0" prefWidth="200.0">
+               <children>
+                  <Label text="Username" />
+                  <TextField promptText="Enter your username" />
+                  <Label fx:id="username_error" text="Label" textFill="RED" visible="false" />
+               </children>
+            </VBox>
+            <VBox maxWidth="200.0" prefHeight="54.0" prefWidth="200.0">
+               <children>
+                  <Label text="Email" />
+                  <TextField promptText="Enter your email" />
+                  <Label fx:id="email_error" text="Label" textFill="RED" visible="false" />
+               </children>
+            </VBox>
+            <VBox maxWidth="200.0" prefHeight="53.0" prefWidth="422.0">
+               <children>
+                  <Label text="Password" />
+                  <PasswordField prefWidth="600.0" promptText="Enter your password" />
+                  <Label fx:id="password_error" text="Label" textFill="RED" visible="false" />
+               </children>
+            </VBox>
+            <Button mnemonicParsing="false" text="Sign Up" />
+            <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
+            <Hyperlink text="Already have an account? Login" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

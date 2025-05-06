@@ -1,5 +1,11 @@
 package fcai.prospera;
 
+import fcai.prospera.repository.AssetFileRepository;
+import fcai.prospera.repository.UserFileRepository;
+import fcai.prospera.service.AssetService;
+import fcai.prospera.service.AuthService;
+import fcai.prospera.service.ReportGenerationService;
+import fcai.prospera.service.ZakatAndComplianceService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -9,10 +15,20 @@ import java.io.IOException;
 public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("MainView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
+        // repositories
+        AssetFileRepository assetRepo = new AssetFileRepository();
+        UserFileRepository userRepo = new UserFileRepository();
+
+        // services
+        AuthService authService = new AuthService(userRepo);
+        AssetService assetService = new AssetService(assetRepo);
+        ReportGenerationService reportService = new ReportGenerationService(assetRepo);
+        ZakatAndComplianceService zakatService = new ZakatAndComplianceService(assetRepo);
+
+        SceneManager sceneManager = new SceneManager(stage, authService, assetService, reportService, zakatService);
+
+        sceneManager.showAuthView();
+        stage.setTitle("Prospera");
         stage.show();
     }
 

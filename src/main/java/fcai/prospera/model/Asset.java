@@ -1,6 +1,7 @@
 package fcai.prospera.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
@@ -14,17 +15,17 @@ public class Asset {
     private Date purchaseDate;
     private BigDecimal currentValue;
     private Currency currency;
-    private boolean isShariaCompliant;
+//    private boolean isShariaCompliant;
     private boolean isZakatable;
 
     public Asset() {
-        this.id = UUID.randomUUID();
+        this.id = UUID.randomUUID(); // TODO: NOT ACCEPTABLE AS A PK
     }
 
     public Asset(UUID userId, String name, AssetType type, BigDecimal purchasePrice,
                  Date purchaseDate, BigDecimal currentValue, Currency currency,
                  boolean isShariaCompliant, boolean isZakatable) {
-        this.id = UUID.randomUUID();
+        this.id = UUID.randomUUID(); // TODO: NOT ACCEPTABLE AS A PK
         this.userId = userId;
         this.name = name;
         this.type = type;
@@ -32,17 +33,17 @@ public class Asset {
         this.purchaseDate = purchaseDate;
         this.currentValue = currentValue;
         this.currency = currency;
-        this.isShariaCompliant = isShariaCompliant;
+//        this.isShariaCompliant = isShariaCompliant;
         this.isZakatable = isZakatable;
     }
 
     public BigDecimal calculateROI() {
         if (purchasePrice.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO; // Avoid division by zero
+            return BigDecimal.ZERO; // avoids division by zero
         }
 
         BigDecimal profit = currentValue.subtract(purchasePrice);
-        return profit.divide(purchasePrice, 4, BigDecimal.ROUND_HALF_UP)
+        return profit.divide(purchasePrice, 4, RoundingMode.HALF_UP)
                 .multiply(new BigDecimal("100"));
     }
 
@@ -51,9 +52,9 @@ public class Asset {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+//    public void setId(UUID id) {
+//        this.id = id;
+//    } // TODO: don't think we need this
 
     public UUID getUserId() {
         return userId;
@@ -111,13 +112,13 @@ public class Asset {
         this.currency = currency;
     }
 
-    public boolean isShariaCompliant() {
-        return isShariaCompliant;
-    }
+//    public boolean isShariaCompliant() {
+//        return isShariaCompliant;
+//    }
 
-    public void setShariaCompliant(boolean shariaCompliant) {
-        isShariaCompliant = shariaCompliant;
-    }
+//    public void setShariaCompliant(boolean shariaCompliant) {
+//        isShariaCompliant = shariaCompliant;
+//    }
 
     public boolean isZakatable() {
         return isZakatable;

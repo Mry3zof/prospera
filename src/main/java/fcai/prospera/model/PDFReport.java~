@@ -1,17 +1,16 @@
 package fcai.prospera.model;
 
-public class ExcelReport implements Report {
+public class PDFReport implements Report {
     private byte[] data;
 
-    public ExcelReport() {
-
+    public PDFReport() {
     }
 
     @Override
     public void generateData(ReportData reportData) {
-        System.out.println("Generating Excel report for user: " + reportData.getUser().getUsername());
+        System.out.println("Generating PDF report for user: " + reportData.getUser().getUsername());
 
-        this.data = new byte[1024]; // TODO: implement this
+        this.data = new byte[1024]; // Placeholder
     }
 
     public byte[] getData() {

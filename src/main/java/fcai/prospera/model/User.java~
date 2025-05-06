@@ -7,18 +7,16 @@ public class User {
     private String username;
     private String email;
     private String passwordHash;
-    private RiskTolerance riskTolerance;
 
     public User() {
         this.id = UUID.randomUUID();
     }
 
-    public User(String username, String email, String passwordHash, RiskTolerance riskTolerance) {
+    public User(String username, String email, String passwordHash) {
         this.id = UUID.randomUUID();
         this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.riskTolerance = riskTolerance;
     }
 
     public UUID getId() {
@@ -53,21 +51,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public RiskTolerance getRiskTolerance() {
-        return riskTolerance;
-    }
-
-    public void setRiskTolerance(RiskTolerance riskTolerance) {
-        this.riskTolerance = riskTolerance;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", riskTolerance=" + riskTolerance +
                 '}';
     }
 }

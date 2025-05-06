@@ -6,7 +6,7 @@ public class User {
     private UUID id;
     private String username;
     private String email;
-    private String passwordHash;
+    private String passwordHash; // TODO: how will this be done
 
     public User() {
         this.id = UUID.randomUUID();
@@ -23,9 +23,9 @@ public class User {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+//    public void setId(UUID id) {
+//        this.id = id;
+//    } TODO: check if this is needed
 
     public String getUsername() {
         return username;

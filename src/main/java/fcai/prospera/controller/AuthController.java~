@@ -1,33 +1,25 @@
 package fcai.prospera.controller;
 
+import fcai.prospera.SceneManager;
 import fcai.prospera.model.User;
 import fcai.prospera.service.AuthService;
 import fcai.prospera.view.AuthView;
 import java.util.Map;
 
 public class AuthController {
-    private final AuthService authService;
-    private final AuthView authView;
-
-    public AuthController(AuthService authService, AuthView authView) {
+    private AuthService authService;
+    private SceneManager sceneManager;
+    
+    public void init(SceneManager sceneManager, AuthService authService) {
+        this.sceneManager = sceneManager;
         this.authService = authService;
-        this.authView = authView;
     }
 
     public void login(String username, String password) {
-        User authenticatedUser = authService.login(username, password);
-        if (authenticatedUser != null) authView.onLoginSucceeded();
-        else authView.onLoginFailed("Invalid credentials");
-        // TODO: refactor this shit
+
     }
 
     public void signup(String name, String email, String username, String password) {
-        try {
-            authService.signup(name, email, username, password);
-        } catch (Exception e) {
-            authView.onSignupFailed(Map.of("error", e.getMessage()));
-            return;
-        }
-        authView.onSignupSucceeded(); // TODO: refactor
+
     }
 }

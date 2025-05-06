@@ -10,7 +10,7 @@ public class PDFReport implements Report {
     public void generateData(ReportData reportData) {
         System.out.println("Generating PDF report for user: " + reportData.getUser().getUsername());
 
-        this.data = new byte[1024]; // Placeholder
+        this.data = new byte[1024]; // TODO: implement this
     }
 
     public byte[] getData() {
