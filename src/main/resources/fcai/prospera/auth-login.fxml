@@ -35,7 +35,7 @@
             <Button mnemonicParsing="false" onAction="#login" text="Login" />
             <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
             <Hyperlink onAction="#showSignupView" text="Don't have an account? Sign Up" />
-            <Label fx:id="error_label" text="Label" textFill="RED" visible="false" />
+            <Label fx:id="error_label" textFill="RED" />
          </children>
       </VBox>
    </children>
