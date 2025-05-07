@@ -6,6 +6,7 @@ import fcai.prospera.service.AuthService;
 import fcai.prospera.view.AuthView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
@@ -29,20 +30,27 @@ public class AuthController {
     public Label password_error;
 
     @FXML
-    public TextField username_field;
+    private TextField UsernameTextField;
 
     @FXML
-    public TextField email_field;
+    private TextField EmailTextField;
 
     @FXML
-    public TextField password_field;
+    private PasswordField PasswordTextField;
+
+    @FXML
+    private TextField LoginUsernameTextField;
+
+    @FXML
+    private PasswordField LoginPasswordTextField;
+
 
     public void init(SceneManager sceneManager, AuthService authService) {
         this.sceneManager = sceneManager;
         this.authService = authService;
     }
 
-    public void login(String username, String password) {
+    private void login(String username, String password) {
         if (!authService.isPasswordCorrect(username, password)) {
             error_label.setText("Password is incorrect");
             return;
@@ -62,29 +70,41 @@ public class AuthController {
         }
     }
 
-    public void signup(String name, String email, String username, String password) {
+    public void login(){
+        String username = LoginUsernameTextField.getText();
+        String password = LoginPasswordTextField.getText();
+        login(username, password);
+    }
+
+    private void signup(String name, String email, String username, String password) {
+        boolean error = false;
+
         if (!authService.isUsernameValid(username)) {
-            username_error.setText("Username is invalid"); // TODO: specify what is valid
-            return;
+            username_error.setText("Username is invalid: Your username should be between 3 to 20 characters can't contain spaces of special characters");
+            error = true;
         }
 
         if (!authService.isEmailValid(email)) {
-            email_error.setText("Email is invalid"); // TODO: specify what is valid
-            return;
+            email_error.setText("Email is invalid: Your Email should look something like this : example@Email.com");
+            error = true;
         }
 
         if (!authService.isPasswordValid(password)) {
-            password_error.setText("Password is invalid"); // TODO: specify what is valid
-            return;
+            password_error.setText("Password is invalid : Your password should be at least 8 characters has at least one uppercase and one lowercase characters and has at least one digit and one special character");
+            error = true;
         }
 
         if (authService.doesUsernameExist(username)) {
             username_error.setText("Username already exists");
-            return;
+            error = true;
         }
 
         if (authService.doesEmailExist(email)) {
             email_error.setText("Email already exists");
+            error = true;
+        }
+
+        if (error) {
             return;
         }
 
@@ -96,6 +116,13 @@ public class AuthController {
         } catch (IOException e) {
             throw new RuntimeException(e); // TODO: handle this
         }
+    }
+
+    public void signup(){
+        String username = UsernameTextField.getText() ;
+        String email = EmailTextField.getText() ;
+        String password = PasswordTextField.getText() ;
+        signup(username, email, username, password);
     }
 
     public void showLoginView() {

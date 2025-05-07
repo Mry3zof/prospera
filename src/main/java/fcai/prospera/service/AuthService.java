@@ -31,15 +31,33 @@ public class AuthService {
     }
 
     public boolean isEmailValid(String email) {
-        return false;
+        String emailRegex = "^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,6}$";
+
+        if (email == null) {
+            return false;
+        }
+
+        return email.matches(emailRegex);
     }
 
     public boolean isPasswordValid(String password) {
-        return false;
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+        if (password == null) {
+            return false;
+        }
+
+        return password.matches(passwordRegex);
     }
 
     public boolean isUsernameValid(String username) {
-        return false;
+        String usernameRegex = "^[a-zA-Z0-9_-]{3,20}$";
+
+        if (username == null) {
+            return false;
+        }
+
+        return username.matches(usernameRegex);
     }
 
     public boolean doesUsernameExist(String username) {

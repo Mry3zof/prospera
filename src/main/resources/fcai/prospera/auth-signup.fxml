@@ -23,25 +23,25 @@
             <VBox maxWidth="200.0" prefHeight="54.0" prefWidth="200.0">
                <children>
                   <Label text="Username" />
-                  <TextField promptText="Enter your username" />
-                  <Label fx:id="username_error" text="Label" textFill="RED" visible="false" />
+                  <TextField fx:id="UsernameTextField" promptText="Enter your username" />
+                  <Label fx:id="username_error" textFill="RED" />
                </children>
             </VBox>
             <VBox maxWidth="200.0" prefHeight="54.0" prefWidth="200.0">
                <children>
                   <Label text="Email" />
-                  <TextField promptText="Enter your email" />
-                  <Label fx:id="email_error" text="Label" textFill="RED" visible="false" />
+                  <TextField fx:id="EmailTextField" promptText="Enter your email" />
+                  <Label fx:id="email_error" prefHeight="92.0" prefWidth="200.0" textFill="RED" />
                </children>
             </VBox>
             <VBox maxWidth="200.0" prefHeight="53.0" prefWidth="422.0">
                <children>
                   <Label text="Password" />
-                  <PasswordField prefWidth="600.0" promptText="Enter your password" />
-                  <Label fx:id="password_error" text="Label" textFill="RED" visible="false" />
+                  <PasswordField fx:id="PasswordTextField" prefWidth="600.0" promptText="Enter your password" />
+                  <Label fx:id="password_error" prefHeight="17.0" prefWidth="282.0" textFill="RED" />
                </children>
             </VBox>
-            <Button mnemonicParsing="false" text="Sign Up" />
+            <Button mnemonicParsing="false" onAction="#signup" text="Sign Up" />
             <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
             <Hyperlink onAction="#showLoginView" text="Already have an account? Login" />
          </children>
