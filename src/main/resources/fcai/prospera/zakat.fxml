@@ -47,7 +47,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="43.0" prefWidth="600.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Choose Assets" />
+                        <Button mnemonicParsing="false" onAction="#showChooseAssetsView" text="Choose Assets" />
                         <Separator prefHeight="0.0" prefWidth="0.0" visible="false" />
                         <Button mnemonicParsing="false" text="Fill Out Manually" />
                      </children>

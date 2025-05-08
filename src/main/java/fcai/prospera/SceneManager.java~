@@ -76,8 +76,8 @@ public class SceneManager {
     }
 
     public void showZakatChooseAssetsView() throws IOException {
-        switchScene("zakat-select-assets.fxml", controller -> {
-            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, true);
+        switchScene("zakat.fxml", controller -> {
+            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, false);
         });
     }
 }
