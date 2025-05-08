@@ -20,25 +20,37 @@
                </font>
             </Label>
             <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
-            <VBox maxWidth="200.0" prefHeight="54.0" prefWidth="200.0">
+            <VBox alignment="CENTER" maxWidth="576.0" prefHeight="59.0" prefWidth="576.0">
                <children>
-                  <Label text="Username" />
-                  <TextField fx:id="UsernameTextField" promptText="Enter your username" />
+                  <VBox maxWidth="200.0" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Username" />
+                        <TextField fx:id="username_field" promptText="Enter your username" />
+                     </children>
+                  </VBox>
                   <Label fx:id="username_error" textFill="RED" />
                </children>
             </VBox>
-            <VBox maxWidth="200.0" prefHeight="54.0" prefWidth="200.0">
+            <VBox alignment="CENTER" maxWidth="595.0" prefHeight="59.0" prefWidth="595.0">
                <children>
-                  <Label text="Email" />
-                  <TextField fx:id="EmailTextField" promptText="Enter your email" />
-                  <Label fx:id="email_error" prefHeight="92.0" prefWidth="200.0" textFill="RED" />
+                  <VBox maxWidth="200.0" prefHeight="42.0" prefWidth="489.0">
+                     <children>
+                        <Label text="Email" />
+                        <TextField fx:id="email_field" promptText="Enter your email" />
+                     </children>
+                  </VBox>
+                  <Label fx:id="email_error" textFill="RED" />
                </children>
             </VBox>
-            <VBox maxWidth="200.0" prefHeight="53.0" prefWidth="422.0">
+            <VBox alignment="CENTER" maxWidth="612.0" prefHeight="59.0" prefWidth="612.0">
                <children>
-                  <Label text="Password" />
-                  <PasswordField fx:id="PasswordTextField" prefWidth="600.0" promptText="Enter your password" />
-                  <Label fx:id="password_error" prefHeight="17.0" prefWidth="282.0" textFill="RED" />
+                  <VBox maxWidth="200.0" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Password" />
+                        <PasswordField fx:id="password_field" prefWidth="600.0" promptText="Enter your password" />
+                     </children>
+                  </VBox>
+                  <Label fx:id="password_error" textFill="RED" />
                </children>
             </VBox>
             <Button mnemonicParsing="false" onAction="#signup" text="Sign Up" />

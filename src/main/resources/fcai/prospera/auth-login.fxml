@@ -23,13 +23,13 @@
             <VBox maxWidth="200.0" prefHeight="54.0" prefWidth="200.0">
                <children>
                   <Label text="Username" />
-                  <TextField fx:id="LoginUsernameTextField" promptText="Enter your username" />
+                  <TextField fx:id="username_field" promptText="Enter your username" />
                </children>
             </VBox>
             <VBox maxWidth="200.0" prefHeight="53.0" prefWidth="422.0">
                <children>
                   <Label text="Password" />
-                  <PasswordField fx:id="LoginPasswordTextField" prefWidth="600.0" promptText="Enter your password" />
+                  <PasswordField fx:id="password_field" prefWidth="600.0" promptText="Enter your password" />
                </children>
             </VBox>
             <Button mnemonicParsing="false" onAction="#login" text="Login" />

@@ -73,12 +73,12 @@ public class AuthController {
         boolean error = false;
 
         if (!authService.isUsernameValid(username)) {
-            username_error.setText("Your username should be between 3-20 characters, no spaces or special characters");
+            username_error.setText("Username is invalid: Your username should be between 3 to 20 characters can't contain spaces of special characters");
             error = true;
         }
 
         if (!authService.isEmailValid(email)) {
-            email_error.setText("Your Email should look something like: example@Email.com");
+            email_error.setText("Email is invalid: Your Email should look something like this : example@Email.com");
             error = true;
         }
 
