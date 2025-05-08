@@ -25,4 +25,12 @@ public class DashboardController {
             throw new RuntimeException(e); // TODO: handle
         }
     }
+
+    public void showAssetsView() {
+        try {
+            sceneManager.showAssetsView();
+        } catch (IOException e) {
+            throw new RuntimeException(e); // TODO: handle
+        }
+    }
 }

@@ -75,26 +75,36 @@ public class AuthController {
         if (!authService.isUsernameValid(username)) {
             username_error.setText("Your username should be between 3-20 characters, no spaces or special characters");
             error = true;
+        }else{
+            username_error.setText("");
         }
 
         if (!authService.isEmailValid(email)) {
             email_error.setText("Your Email should look something like: example@Email.com");
             error = true;
+        }else{
+            email_error.setText("");
         }
 
         if (!authService.isPasswordValid(password)) {
             password_error.setText("Password should be >= 8 characters with at least one digit");
             error = true;
+        }else{
+            password_error.setText("");
         }
 
         if (authService.doesUsernameExist(username)) {
             username_error.setText("Username already exists");
             error = true;
+        }else{
+            username_error.setText("");
         }
 
         if (authService.doesEmailExist(email)) {
             email_error.setText("Email already exists");
             error = true;
+        }else{
+            email_error.setText("");
         }
 
         if (error) {

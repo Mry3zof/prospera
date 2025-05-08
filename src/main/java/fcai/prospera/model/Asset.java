@@ -1,143 +1,163 @@
 package fcai.prospera.model;
 
+import javafx.beans.property.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.RoundingMode; // Added import
 import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+// Assuming AssetType enum exists, e.g.:
+// package fcai.prospera.model;
+// public enum AssetType { STOCK, BOND, REAL_ESTATE, CRYPTOCURRENCY, OTHER }
+
 public class Asset {
-    private UUID id;
-    private UUID userId;
-    private String name;
-    private AssetType type;
-    private BigDecimal purchasePrice;
-    private Date purchaseDate;
-    private BigDecimal currentValue;
-    private Currency currency;
-//    private boolean isShariaCompliant;
-    private boolean isZakatable;
+    private final UUID id;
+    private final ObjectProperty<UUID> userId = new SimpleObjectProperty<>();
+    private final StringProperty name = new SimpleStringProperty();
+    private final ObjectProperty<AssetType> type = new SimpleObjectProperty<>(); // Assumes AssetType is defined
+    private final ObjectProperty<BigDecimal> purchasePrice = new SimpleObjectProperty<>();
+    private final ObjectProperty<Date> purchaseDate = new SimpleObjectProperty<>();
+    private final ObjectProperty<BigDecimal> currentValue = new SimpleObjectProperty<>();
+    private final ObjectProperty<Currency> currency = new SimpleObjectProperty<>();
+    private final BooleanProperty zakatable = new SimpleBooleanProperty();
 
     public Asset() {
-        this.id = UUID.randomUUID(); // TODO: NOT ACCEPTABLE AS A PK
+        this.id = UUID.randomUUID();
     }
 
     public Asset(UUID userId, String name, AssetType type, BigDecimal purchasePrice,
                  Date purchaseDate, BigDecimal currentValue, Currency currency,
-                 boolean isShariaCompliant, boolean isZakatable) {
-        this.id = UUID.randomUUID(); // TODO: NOT ACCEPTABLE AS A PK
-        this.userId = userId;
-        this.name = name;
-        this.type = type;
-        this.purchasePrice = purchasePrice;
-        this.purchaseDate = purchaseDate;
-        this.currentValue = currentValue;
-        this.currency = currency;
-//        this.isShariaCompliant = isShariaCompliant;
-        this.isZakatable = isZakatable;
+                 boolean isZakatable) {
+        this(); // Call to the default constructor to initialize id
+        setUserId(userId);
+        setName(name);
+        setType(type);
+        setPurchasePrice(purchasePrice);
+        setPurchaseDate(purchaseDate);
+        setCurrentValue(currentValue);
+        setCurrency(currency);
+        setZakatable(isZakatable);
     }
 
-    public BigDecimal calculateROI() {
-        if (purchasePrice.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO; // avoids division by zero
-        }
-
-        BigDecimal profit = currentValue.subtract(purchasePrice);
-        return profit.divide(purchasePrice, 4, RoundingMode.HALF_UP)
-                .multiply(new BigDecimal("100"));
+    // Property getters
+    public StringProperty nameProperty() {
+        return name;
     }
 
-    // Getters and Setters
+    public ObjectProperty<AssetType> typeProperty() {
+        return type;
+    }
+
+    public ObjectProperty<BigDecimal> purchasePriceProperty() {
+        return purchasePrice;
+    }
+
+    public ObjectProperty<Date> purchaseDateProperty() {
+        return purchaseDate;
+    }
+
+    public ObjectProperty<BigDecimal> currentValueProperty() {
+        return currentValue;
+    }
+
+    public ObjectProperty<Currency> currencyProperty() {
+        return currency;
+    }
+
+    public BooleanProperty zakatableProperty() {
+        return zakatable;
+    }
+
+    public ObjectProperty<UUID> userIdProperty() {
+        return userId;
+    }
+
+    // Regular getters and setters
     public UUID getId() {
         return id;
     }
 
-//    public void setId(UUID id) {
-//        this.id = id;
-//    } // TODO: don't think we need this
-
     public UUID getUserId() {
-        return userId;
+        return userId.get();
     }
 
     public void setUserId(UUID userId) {
-        this.userId = userId;
+        this.userId.set(userId);
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     public AssetType getType() {
-        return type;
+        return type.get();
     }
 
     public void setType(AssetType type) {
-        this.type = type;
+        this.type.set(type);
     }
 
     public BigDecimal getPurchasePrice() {
-        return purchasePrice;
+        return purchasePrice.get();
     }
 
     public void setPurchasePrice(BigDecimal purchasePrice) {
-        this.purchasePrice = purchasePrice;
+        this.purchasePrice.set(purchasePrice);
     }
 
     public Date getPurchaseDate() {
-        return purchaseDate;
+        return purchaseDate.get();
     }
 
     public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
+        this.purchaseDate.set(purchaseDate);
     }
 
     public BigDecimal getCurrentValue() {
-        return currentValue;
+        return currentValue.get();
     }
 
     public void setCurrentValue(BigDecimal currentValue) {
-        this.currentValue = currentValue;
+        this.currentValue.set(currentValue);
     }
 
     public Currency getCurrency() {
-        return currency;
+        return currency.get();
     }
 
     public void setCurrency(Currency currency) {
-        this.currency = currency;
+        this.currency.set(currency);
     }
 
-//    public boolean isShariaCompliant() {
-//        return isShariaCompliant;
-//    }
-
-//    public void setShariaCompliant(boolean shariaCompliant) {
-//        isShariaCompliant = shariaCompliant;
-//    }
-
     public boolean isZakatable() {
-        return isZakatable;
+        return zakatable.get();
     }
 
     public void setZakatable(boolean zakatable) {
-        isZakatable = zakatable;
+        this.zakatable.set(zakatable);
+    }
+
+    public BigDecimal calculateROI() {
+        if (getPurchasePrice() == null || getPurchasePrice().compareTo(BigDecimal.ZERO) == 0 || getCurrentValue() == null) {
+            return BigDecimal.ZERO; // Or handle as an error/NaN appropriately
+        }
+        BigDecimal profit = getCurrentValue().subtract(getPurchasePrice());
+        return profit.divide(getPurchasePrice(), 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal("100"));
     }
 
     @Override
     public String toString() {
         return "Asset{" +
                 "id=" + id +
-                ", userId=" + userId +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", purchasePrice=" + purchasePrice +
-                ", currentValue=" + currentValue +
-                ", currency=" + currency +
+                ", name=" + getName() +
+                ", type=" + (getType() != null ? getType().toString() : "null") + // Added null check for type
+                ", currentValue=" + (getCurrentValue() != null ? getCurrentValue().toPlainString() : "null") + // Added null check
                 '}';
     }
 }
