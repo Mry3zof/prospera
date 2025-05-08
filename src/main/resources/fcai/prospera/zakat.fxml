@@ -21,7 +21,7 @@
                   <HBox prefHeight="31.0" prefWidth="600.0">
                      <children>
                         <Separator prefHeight="0.0" prefWidth="0.0" visible="false" />
-                        <Button mnemonicParsing="false" text="Return To Dashboard" />
+                        <Button mnemonicParsing="false" text="Return To Dashboard" onAction="#showDashboardView" />
                      </children>
                   </HBox>
                </children>

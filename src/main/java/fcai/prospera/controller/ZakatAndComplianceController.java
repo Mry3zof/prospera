@@ -155,7 +155,7 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showZakatChooseAssetsView();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // TODO: handle this
         }
     }
 
@@ -163,7 +163,22 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showZakatView();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // TODO: handle this
         }
     }
+
+    public void showDashboardView() {
+        try {
+            sceneManager.showDashboardView();
+        } catch (IOException e) {
+            throw new RuntimeException(e); // TODO: handle this
+        }
+    }
+
+    /*
+    TODO: implement gold and silver exchange rate input
+    TODO: make currency switching convert current value to new currency value
+    TODO: implement zakat calculation view
+    TODO: either implement asset input form or remove it
+     */
 }

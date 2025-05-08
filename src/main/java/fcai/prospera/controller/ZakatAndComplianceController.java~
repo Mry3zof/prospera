@@ -130,8 +130,8 @@ public class ZakatAndComplianceController {
 
         assets.addAll(
                 new SelectableAsset(new Asset(UUID.randomUUID(), "asset1", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(120), Currency.getInstance("USD"), true, true)),
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset2", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(120), Currency.getInstance("USD"), true, true)),
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset3", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(120), Currency.getInstance("USD"), true, true))
+                new SelectableAsset(new Asset(UUID.randomUUID(), "asset2", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(1200), Currency.getInstance("USD"), true, true)),
+                new SelectableAsset(new Asset(UUID.randomUUID(), "asset3", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(124), Currency.getInstance("USD"), true, true))
         );
 
         // TODO: make selection persistent
@@ -155,7 +155,7 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showZakatChooseAssetsView();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // TODO: handle this
         }
     }
 
@@ -163,7 +163,22 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showZakatView();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // TODO: handle this
         }
     }
+
+    public void showDashboardview() {
+        try {
+            sceneManager.showDashboardView();
+        } catch (IOException e) {
+            throw new RuntimeException(e); // TODO: handle this
+        }
+    }
+
+    /*
+    TODO: implement gold and silver exchange rate input
+    TODO: make currency switching convert current value to new currency value
+    TODO: implement zakat calculation view
+    TODO: either implement asset input form or remove it
+     */
 }
