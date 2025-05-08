@@ -43,7 +43,7 @@
                   <HBox alignment="CENTER" prefHeight="28.0" prefWidth="600.0">
                      <children>
                         <TextField fx:id="silver_rate_field" prefHeight="25.0" prefWidth="257.0" promptText="Current Silver Exchange Rate (currency/gram)" />
-                        <CurrencyComboBox fx:id="silver_currency_picker" prefHeight="25.0" prefWidth="80.0" />
+                        <ChoiceBox fx:id="silver_currency_picker" prefHeight="25.0" prefWidth="80.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="43.0" prefWidth="600.0">
