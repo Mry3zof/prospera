@@ -114,6 +114,13 @@ public class UserFileRepository implements UserRepository {
 
     @Override
     public void updatePasswordHash(UUID userId, String hash) {
-        // TODO: implement
+        User user = getUserById(userId);
+
+        if (user == null) {
+            return;
+        }
+
+        user.setPasswordHash(hash);
+        saveUsers();
     }
 }
