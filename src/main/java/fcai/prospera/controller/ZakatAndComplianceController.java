@@ -314,7 +314,10 @@ public class ZakatAndComplianceController {
     }
 
     /*
-    TODO: implement zakat calculation view
-    TODO: purchase date and hawl due in the asset selection view
+    TODO: implement icons
+    TODO: add the ability to choose from gold and silver nisab
+    TODO: redesign results ui
+    TODO: redesign main ui
+    TODO: make columns more readable and make has hawl passed more readable (highlights or something on that line)
      */
 }
