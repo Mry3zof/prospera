@@ -1,6 +1,9 @@
 package fcai.prospera.model;
 
 import javafx.beans.property.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode; // Added import
 import java.util.Currency;
@@ -11,7 +14,10 @@ import java.util.UUID;
 // package fcai.prospera.model;
 // public enum AssetType { STOCK, BOND, REAL_ESTATE, CRYPTOCURRENCY, OTHER }
 
-public class Asset {
+public class Asset implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final UUID id;
     private final ObjectProperty<UUID> userId = new SimpleObjectProperty<>();
     private final StringProperty name = new SimpleStringProperty();
@@ -23,7 +29,7 @@ public class Asset {
     private final BooleanProperty zakatable = new SimpleBooleanProperty();
 
     public Asset() {
-        this.id = UUID.randomUUID();
+        this.id = UUID.randomUUID(); // TODO: can this have collisions?
     }
 
     public Asset(UUID userId, String name, AssetType type, BigDecimal purchasePrice,
