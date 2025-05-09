@@ -40,7 +40,7 @@
                </font>
             </Button>
             <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
-            <Button minWidth="200.0" mnemonicParsing="false" text="Sign Out" textFill="RED" />
+            <Button minWidth="200.0" mnemonicParsing="false" text="Sign Out" textFill="RED" onAction="#logout" />
          </children>
       </VBox>
    </children>

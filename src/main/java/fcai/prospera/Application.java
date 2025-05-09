@@ -27,8 +27,8 @@ public class Application extends javafx.application.Application {
 
         SceneManager sceneManager = new SceneManager(stage, authService, assetService, reportService, zakatService);
 
-//        sceneManager.showAuthView();
-        sceneManager.showDashboardView();
+        sceneManager.showAuthView(); // TODO: uncomment after auth is implemented
+//        sceneManager.showDashboardView();
         stage.setTitle("Prospera");
         stage.show();
     }

@@ -13,21 +13,25 @@ public class AuthService {
     }
 
     public User login(String username, String password) {
-        return null;
+        this.currentUser = userRepo.getUserByUsername(username);
+        return currentUser;
     }
 
     public void signup(String name, String email, String username, String password) {
+        userRepo.add(new User(username, email, password));
     }
 
     public void logout() {
+        this.currentUser = null;
     }
 
     public User getCurrentUser() {
-        return null;
+        return currentUser;
     }
 
     public boolean isPasswordCorrect(String username, String password) {
-        return false;
+        User user = userRepo.getUserByUsername(username);
+        return user != null && user.getPasswordHash().equals(password);
     }
 
     public boolean isEmailValid(String email) {
@@ -61,10 +65,11 @@ public class AuthService {
     }
 
     public boolean doesUsernameExist(String username) {
-        return false;
+        return userRepo.getUserByUsername(username) != null;
+
     }
 
     public boolean doesEmailExist(String email) {
-        return false;
+        return userRepo.getUserByEmail(email) != null;
     }
 }
