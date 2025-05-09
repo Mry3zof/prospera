@@ -1,6 +1,9 @@
 package fcai.prospera.model;
 
 import javafx.beans.property.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode; // Added import
 import java.util.Currency;
@@ -11,7 +14,10 @@ import java.util.UUID;
 // package fcai.prospera.model;
 // public enum AssetType { STOCK, BOND, REAL_ESTATE, CRYPTOCURRENCY, OTHER }
 
-public class Asset {
+public class Asset implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final UUID id;
     private final ObjectProperty<UUID> userId = new SimpleObjectProperty<>();
     private final StringProperty name = new SimpleStringProperty();
@@ -22,6 +28,7 @@ public class Asset {
     private final ObjectProperty<Currency> currency = new SimpleObjectProperty<>();
     private final BooleanProperty zakatable = new SimpleBooleanProperty();
 
+    // TODO: Can an asset exist without a userId? + is randomUUID enough?
     public Asset() {
         this.id = UUID.randomUUID();
     }
