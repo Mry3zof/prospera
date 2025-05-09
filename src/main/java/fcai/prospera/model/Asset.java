@@ -28,8 +28,9 @@ public class Asset implements Serializable {
     private final ObjectProperty<Currency> currency = new SimpleObjectProperty<>();
     private final BooleanProperty zakatable = new SimpleBooleanProperty();
 
+    // TODO: Can an asset exist without a userId? + is randomUUID enough?
     public Asset() {
-        this.id = UUID.randomUUID(); // TODO: can this have collisions?
+        this.id = UUID.randomUUID();
     }
 
     public Asset(UUID userId, String name, AssetType type, BigDecimal purchasePrice,

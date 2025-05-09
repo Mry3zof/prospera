@@ -8,21 +8,21 @@ import java.util.UUID;
 public class UserFileRepository implements UserRepository {
 
     private final String USERS_FILE_PATH = "data/users.ser";
-    private final File usersData;
+    private final File usersStorage;
     private HashMap<UUID, User> users;
 
     public UserFileRepository() {
-        usersData = new File(USERS_FILE_PATH);
+        usersStorage = new File(USERS_FILE_PATH);
         users = new HashMap<>();
         loadUsers();
     }
 
     private void loadUsers() {
-        if (!usersData.exists() || usersData.length() == 0) {
+        if (!usersStorage.exists() || usersStorage.length() == 0) {
             return;
         }
 
-        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(usersData))) {
+        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(usersStorage))) {
             users = (HashMap<UUID, User>) objectIn.readObject();
 
             // TODO: Remove
@@ -37,7 +37,7 @@ public class UserFileRepository implements UserRepository {
     }
 
     private void saveUsers() {
-        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(usersData))) {
+        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(usersStorage))) {
             objectOut.writeObject(users);
 
             // TODO: Remove
@@ -53,7 +53,7 @@ public class UserFileRepository implements UserRepository {
 
     @Override
     public boolean add(User user) {
-        if (users.containsKey(user.getId())) {
+        if (user == null || users.containsKey(user.getId())) {
             return false;
         }
 
@@ -64,7 +64,7 @@ public class UserFileRepository implements UserRepository {
 
     @Override
     public User getUserById(UUID userId) {
-        return users.get(userId);
+        return (userId != null ? users.get(userId) : null);
     }
 
     @Override
@@ -114,8 +114,11 @@ public class UserFileRepository implements UserRepository {
 
     @Override
     public void updatePasswordHash(UUID userId, String hash) {
-        User user = getUserById(userId);
+        if (userId == null || hash == null) {
+            return;
+        }
 
+        User user = getUserById(userId);
         if (user == null) {
             return;
         }
