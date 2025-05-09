@@ -1,4 +1,0 @@
-package fcai.prospera.repository;
-
-public class AssetFileRepository implements AssetRepository {
-}

@@ -30,10 +30,8 @@ public class CurrencyComboBox extends ComboBox<CurrencyItem> {
         return List.of(
                 new CurrencyItem("USD", "United States Dollar", "$"),
                 new CurrencyItem("EUR", "Euro", "€"),
-                new CurrencyItem("JPY", "Japanese Yen", "¥"),
                 new CurrencyItem("GBP", "British Pound", "£"),
                 new CurrencyItem("EGP", "Egyptian Pound", "£")
-                // TODO: add more
         );
     }
 }
