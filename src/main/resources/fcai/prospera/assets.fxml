@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="fcai.prospera.controller.AssetController">
+    <top>
+        <ToolBar>
+            <Button text="Add Asset" fx:id="addButton" onAction="#handleAddAsset"/>
+            <Button text="Refresh" fx:id="refreshButton" onAction="#handleRefreshAssets"/>
+            <Button text="Return to dashboard" fx:id="returnToDashBoard" onAction="#handleReturnToDashboard"/>
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
+            <Label text="Net Worth:"/>
+            <Label fx:id="netWorthLabel" text="0.00" style="-fx-font-weight: bold;"/>
+        </ToolBar>
+    </top>
+
+    <center>
+        <TableView fx:id="assetTable" prefHeight="400">
+            <columns>
+                <TableColumn fx:id="nameColumn" text="Name" prefWidth="150">
+                    <!-- Controller will set cellValueFactory, or keep this if preferred -->
+                    <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="typeColumn" text="Type" prefWidth="100">
+                    <cellValueFactory><PropertyValueFactory property="type"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="purchasePriceColumn" text="Purchase Price" prefWidth="100">
+                    <cellValueFactory><PropertyValueFactory property="purchasePrice"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="currentValueColumn" text="Current Value" prefWidth="100">
+                    <cellValueFactory><PropertyValueFactory property="currentValue"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="currencyColumn" text="Currency" prefWidth="80">
+                    <cellValueFactory><PropertyValueFactory property="currency"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="purchaseDateColumn" text="Purchase Date" prefWidth="120">
+                    <cellValueFactory><PropertyValueFactory property="purchaseDate"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="zakatableColumn" text="Zakatable?" prefWidth="80">
+                    <cellValueFactory><PropertyValueFactory property="zakatable"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120">
+                    <!-- Cell factory will be set in the controller -->
+                </TableColumn>
+            </columns>
+        </TableView>
+    </center>
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+</BorderPane>
