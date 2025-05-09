@@ -1,21 +1,26 @@
 package fcai.prospera.model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.UUID;
 
-public class User {
+public class User implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private UUID id;
     private String username;
     private String email;
     private String passwordHash; // TODO: how will this be done
 
-    public User() {
-        this.id = UUID.randomUUID();
-    }
+//    public User() {
+//        this.id = UUID.randomUUID();
+//    } TODO: consider removing this because an email is required to create a UUID that can be used as a primary key
 
     public User(String username, String email, String passwordHash) {
-        this.id = UUID.randomUUID();
-        this.username = username;
-        this.email = email;
+        this.id = UUID.nameUUIDFromBytes(email.getBytes());
+        this.username = username.toLowerCase().trim();
+        this.email = email.toLowerCase().trim();
         this.passwordHash = passwordHash;
     }
 
@@ -32,7 +37,7 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.toLowerCase().trim();
     }
 
     public String getEmail() {
@@ -40,7 +45,7 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase().trim();
     }
 
     public String getPasswordHash() {

@@ -1,13 +1,15 @@
 package fcai.prospera;
 
+import fcai.prospera.controller.AssetController;
 import fcai.prospera.controller.AuthController;
 import fcai.prospera.controller.DashboardController;
 import fcai.prospera.controller.ZakatAndComplianceController;
-import fcai.prospera.repository.AssetRepository;
+// import fcai.prospera.repository.AssetRepository; // Not used directly here
 import fcai.prospera.service.AssetService;
 import fcai.prospera.service.AuthService;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.ZakatAndComplianceService;
+import fcai.prospera.view.AssetView; // Assuming AssetView interface/class
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,30 +21,57 @@ import java.util.function.Consumer;
 public class SceneManager {
     private final Stage stage;
 
-    // services
     private final AuthService authService;
     private final AssetService assetService;
     private final ReportGenerationService reportService;
     private final ZakatAndComplianceService zakatService;
 
-    public SceneManager(Stage stage, AuthService authService, AssetService assetService, ReportGenerationService reportService, ZakatAndComplianceService zakatService) {
+    public SceneManager(Stage stage, AuthService authService, AssetService assetService,
+                        ReportGenerationService reportService, ZakatAndComplianceService zakatService) {
         this.stage = stage;
         this.authService = authService;
         this.assetService = assetService;
         this.reportService = reportService;
         this.zakatService = zakatService;
+
+        // Initialize assetViewInstance here if you have a concrete implementation
+        // e.g., this.assetViewInstance = new DefaultAssetView();
+        // If AssetView is just for simple alerts, AssetController can handle it being null.
     }
 
-    private void switchScene(String fxmlPath, Consumer<Object> controllerInjector) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+    private void switchScene(String fxmlFile, Consumer<Object> controllerInjector) throws IOException {
+        // Assuming fxmlFile is just the filename e.g. "assets.fxml"
+        // and FXML files are in the same package as SceneManager or a subpackage.
+        // For fcai.prospera.assets.fxml, path would be "assets.fxml"
+        // If in fcai.prospera.fxml.assets.fxml, path would be "fxml/assets.fxml"
+        String fxmlResourcePath = fxmlFile; // Adjust if FXMLs are in a subfolder like "fxml/"
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlResourcePath));
+
+        if (loader.getLocation() == null) {
+            // Try classpath root if not found relative to class
+            loader.setLocation(getClass().getResource("/" + fxmlResourcePath));
+            if (loader.getLocation() == null) {
+                throw new IOException("Cannot find FXML file: " + fxmlResourcePath +
+                        ". Searched relative to " + getClass().getPackage().getName() + " and at classpath root.");
+            }
+        }
+
         Parent root = loader.load();
         Object controller = loader.getController();
+        if (controller == null) {
+            throw new IOException("Controller not found for FXML: " + fxmlResourcePath +
+                    ". Check fx:controller in FXML and controller class existence.");
+        }
         controllerInjector.accept(controller);
+
         if (stage.getScene() == null) {
             stage.setScene(new Scene(root));
         } else {
             stage.getScene().setRoot(root);
         }
+        stage.sizeToScene(); // Optional: Adjust stage size to scene
+        // stage.centerOnScreen(); // Optional
     }
 
     public void showAuthView() throws IOException {
@@ -64,7 +93,7 @@ public class SceneManager {
     }
 
     public void showDashboardView() throws IOException {
-        switchScene("dashboard.fxml", controller -> {
+        switchScene("dashboard.fxml", controller -> { // Assuming dashboard.fxml is the name
             ((DashboardController) controller).init(this, authService);
         });
     }
@@ -72,6 +101,14 @@ public class SceneManager {
     public void showZakatView() throws IOException {
         switchScene("zakat.fxml", controller -> {
             ((ZakatAndComplianceController) controller).init(this, authService, zakatService, false);
+        });
+    }
+
+    public void showAssetsView() throws IOException {
+        switchScene("assets.fxml", controller -> { // Assuming assets.fxml is the name
+            // If AssetView is an interface and you have an implementation:
+            // if (this.assetViewInstance == null) this.assetViewInstance = new ConcreteAssetViewImplementation();
+            ((AssetController) controller).init(this, authService, assetService);
         });
     }
 
