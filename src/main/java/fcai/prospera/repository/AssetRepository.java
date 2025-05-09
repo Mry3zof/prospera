@@ -9,10 +9,10 @@ import java.util.UUID;
 
 public interface AssetRepository {
     boolean addAsset(Asset asset);
-    boolean removeAsset(UUID assetsId);
-    boolean updateAsset(UUID assetsId, Asset newAsset);
-    boolean updateCurrentValue(UUID assetsId, BigDecimal newValue);
-    Asset getAssetById(UUID assetsId);
+    boolean removeAsset(UUID assetId);
+    boolean updateAsset(UUID assetId, Asset newAsset);
+    boolean updateCurrentValue(UUID assetId, BigDecimal newValue);
+    Asset getAssetById(UUID assetId);
     List<Asset> getUserAssets(UUID userId);
     BigDecimal calculateNetWorth(UUID userId);
     Map<AssetType, BigDecimal> getUserAssetDistribution(UUID userId);

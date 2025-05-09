@@ -15,22 +15,22 @@ public class AssetFileRepository implements AssetRepository {
     }
 
     @Override
-    public boolean removeAsset(UUID assetsId) {
+    public boolean removeAsset(UUID assetId) {
         return false;
     }
 
     @Override
-    public boolean updateAsset(UUID assetsId, Asset newAsset) {
+    public boolean updateAsset(UUID assetId, Asset newAsset) {
         return false;
     }
 
     @Override
-    public boolean updateCurrentValue(UUID assetsId, BigDecimal newValue) {
+    public boolean updateCurrentValue(UUID assetId, BigDecimal newValue) {
         return false;
     }
 
     @Override
-    public Asset getAssetById(UUID assetsId) {
+    public Asset getAssetById(UUID assetId) {
         return null;
     }
 
