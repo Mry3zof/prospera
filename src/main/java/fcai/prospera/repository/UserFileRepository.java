@@ -8,21 +8,21 @@ import java.util.UUID;
 public class UserFileRepository implements UserRepository {
 
     private final String USERS_FILE_PATH = "data/users.ser";
-    private final File userData;
+    private final File usersData;
     private HashMap<UUID, User> users;
 
     public UserFileRepository() {
-        userData = new File(USERS_FILE_PATH);
+        usersData = new File(USERS_FILE_PATH);
         users = new HashMap<>();
         loadUsers();
     }
 
     private void loadUsers() {
-        if (!userData.exists() || userData.length() == 0) {
+        if (!usersData.exists() || usersData.length() == 0) {
             return;
         }
 
-        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(userData))) {
+        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(usersData))) {
             users = (HashMap<UUID, User>) objectIn.readObject();
 
             // TODO: Remove
@@ -37,7 +37,7 @@ public class UserFileRepository implements UserRepository {
     }
 
     private void saveUsers() {
-        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(userData))) {
+        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(usersData))) {
             objectOut.writeObject(users);
 
             // TODO: Remove
