@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ZakatAndComplianceController {
-    public static class SelectableAsset {
+    public class SelectableAsset {
         private final Asset asset;
         private final BooleanProperty selected = new SimpleBooleanProperty(false);
         private final ObjectProperty<Image> icon = new SimpleObjectProperty<>();
@@ -129,9 +129,9 @@ public class ZakatAndComplianceController {
 //        zakatable_col.setCellValueFactory(new PropertyValueFactory<>("zakatable"));
 
         assets.addAll(
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset1", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(120), Currency.getInstance("USD"), true)),
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset2", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(1200), Currency.getInstance("USD"), true)),
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset3", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(124), Currency.getInstance("USD"), true))
+                new SelectableAsset(new Asset(UUID.randomUUID(), "asset1", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(120), Currency.getInstance("USD"), true, true)),
+                new SelectableAsset(new Asset(UUID.randomUUID(), "asset2", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(1200), Currency.getInstance("USD"), true, true)),
+                new SelectableAsset(new Asset(UUID.randomUUID(), "asset3", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(124), Currency.getInstance("USD"), true, true))
         );
 
         // TODO: make selection persistent
