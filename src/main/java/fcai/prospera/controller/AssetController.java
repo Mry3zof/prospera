@@ -1,30 +1,40 @@
 package fcai.prospera.controller;
 
+import fcai.prospera.CurrencyComboBox;
+import fcai.prospera.CurrencyConversion;
+import fcai.prospera.CurrencyItem;
 import fcai.prospera.SceneManager;
 import fcai.prospera.model.Asset;
 import fcai.prospera.model.AssetType;
 import fcai.prospera.service.AssetService;
 import fcai.prospera.service.AuthService;
-import fcai.prospera.view.AssetView; // Make sure this interface/class exists
+
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class AssetController {
-    // Services & SceneManager - will be injected by init
     private AssetService assetService;
     private AuthService authService;
-    private AssetView assetView; // Injected by init (can be null if AssetView is optional)
-    private SceneManager sceneManager; // Injected by init
+    private SceneManager sceneManager;
 
     @FXML private TableView<Asset> assetTable;
     @FXML private TableColumn<Asset, String> nameColumn;
@@ -35,28 +45,35 @@ public class AssetController {
     @FXML private TableColumn<Asset, Date> purchaseDateColumn;
     @FXML private TableColumn<Asset, Boolean> zakatableColumn;
     @FXML private TableColumn<Asset, Void> actionsColumn;
+
     @FXML private Label netWorthLabel;
+    @FXML private CurrencyComboBox netWorthCurrencyComboBox;
+
     @FXML private Button addButton;
     @FXML private Button refreshButton;
     @FXML private Button returnToDashBoard;
 
     private ObservableList<Asset> assetsList = FXCollections.observableArrayList();
+    private static final String DEFAULT_NET_WORTH_CURRENCY = "USD";
 
-    // No-arg constructor for FXML loader
-    public AssetController() {
-        // System.out.println("AssetController: No-arg constructor called");
-    }
+    public AssetController() { }
 
     @FXML
     public void initialize() {
-        // System.out.println("AssetController: FXML initialize() called");
-        // Setup FXML components that DON'T rely on injected services yet.
-        // CellValueFactories are generally fine as they define how to get data later.
         if (nameColumn != null) nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         if (typeColumn != null) typeColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
         if (purchasePriceColumn != null) purchasePriceColumn.setCellValueFactory(cellData -> cellData.getValue().purchasePriceProperty());
         if (currentValueColumn != null) currentValueColumn.setCellValueFactory(cellData -> cellData.getValue().currentValueProperty());
-        if (currencyColumn != null) currencyColumn.setCellValueFactory(cellData -> cellData.getValue().currencyProperty());
+        if (currencyColumn != null) {
+            currencyColumn.setCellValueFactory(cellData -> cellData.getValue().currencyProperty());
+            currencyColumn.setCellFactory(column -> new TableCell<>() {
+                @Override
+                protected void updateItem(Currency item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getCurrencyCode());
+                }
+            });
+        }
         if (purchaseDateColumn != null) purchaseDateColumn.setCellValueFactory(cellData -> cellData.getValue().purchaseDateProperty());
         if (zakatableColumn != null) zakatableColumn.setCellValueFactory(cellData -> cellData.getValue().zakatableProperty());
 
@@ -65,7 +82,6 @@ public class AssetController {
                 private final Button editBtn = new Button("Edit");
                 private final Button deleteBtn = new Button("Delete");
                 private final HBox pane = new HBox(5, editBtn, deleteBtn);
-
                 {
                     editBtn.setOnAction(event -> {
                         Asset asset = getTableView().getItems().get(getIndex());
@@ -73,10 +89,9 @@ public class AssetController {
                     });
                     deleteBtn.setOnAction(event -> {
                         Asset asset = getTableView().getItems().get(getIndex());
-                        handleRemoveAssetClicked(asset);
+                        handleRemoveAssetClicked(asset); // Call to the method
                     });
                 }
-
                 @Override
                 protected void updateItem(Void item, boolean empty) {
                     super.updateItem(item, empty);
@@ -84,19 +99,27 @@ public class AssetController {
                 }
             });
         }
-        // DO NOT call refreshAssets() or assetTable.setItems() here yet.
+
+        if (netWorthCurrencyComboBox != null) {
+            CurrencyItem defaultDisplayCurrency = findCurrencyItemByCode(DEFAULT_NET_WORTH_CURRENCY, netWorthCurrencyComboBox);
+            if (defaultDisplayCurrency == null && !netWorthCurrencyComboBox.getItems().isEmpty()) {
+                defaultDisplayCurrency = netWorthCurrencyComboBox.getItems().get(0);
+            }
+            netWorthCurrencyComboBox.setValue(defaultDisplayCurrency);
+            netWorthCurrencyComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null && authService != null && authService.getCurrentUser() != null) {
+                    updateNetWorth(authService.getCurrentUser().getId());
+                } else if (newVal != null) {
+                    updateNetWorth(null);
+                }
+            });
+        }
     }
 
-    // Custom init method called by SceneManager
     public void init(SceneManager sceneManager, AuthService authService, AssetService assetService) {
-        // System.out.println("AssetController: Custom init() called");
         this.sceneManager = sceneManager;
         this.authService = authService;
         this.assetService = assetService;
-        this.assetView = assetView; // assetView can be null if optional
-
-        // Now that FXML components are ready (from initialize()) and services are injected,
-        // set up the table with items and load initial data.
         if (assetTable != null) {
             assetTable.setItems(assetsList);
             refreshAssets();
@@ -105,39 +128,69 @@ public class AssetController {
         }
     }
 
-    private void handleEditAssetClicked(Asset assetToEdit) {
-        if (assetService == null) {
-            System.err.println("AssetService not initialized in AssetController for editing.");
-            return;
-        }
-        System.out.println("Editing asset: " + assetToEdit.getName());
-        Asset editedAsset = new Asset(
-                assetToEdit.getUserId(),
-                assetToEdit.getName() + " (edited)",
-                assetToEdit.getType(),
-                assetToEdit.getPurchasePrice().add(BigDecimal.TEN),
-                assetToEdit.getPurchaseDate(),
-                assetToEdit.getCurrentValue().add(BigDecimal.TEN),
-                assetToEdit.getCurrency(),
-                !assetToEdit.isZakatable()
-        );
-
-        if (assetService.updateAsset(assetToEdit.getId(), editedAsset)) {
-            assetsChanged();
-            System.out.println("Asset updated successfully.");
-        } else {
-            if (assetView != null) {
-                // assetView.onEditAssetFail(); // Assuming AssetView has such a method
-            } else {
-                System.err.println("Failed to update asset. (AssetView is null)");
-                new Alert(Alert.AlertType.ERROR, "Could not update the asset.").showAndWait();
-            }
-        }
+    private CurrencyItem findCurrencyItemByCode(String code, CurrencyComboBox comboBox) {
+        if (code == null || comboBox == null || comboBox.getItems() == null) return null;
+        return comboBox.getItems().stream()
+                .filter(item -> item != null && item.getCode().equalsIgnoreCase(code))
+                .findFirst().orElse(null);
     }
 
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void updateNetWorth(UUID userId) {
+        if (netWorthLabel == null || netWorthCurrencyComboBox == null) {
+            System.err.println("Net worth UI components not initialized.");
+            return;
+        }
+        if (userId == null || authService == null || authService.getCurrentUser() == null) {
+            netWorthLabel.setText("N/A");
+            return;
+        }
+        if (assetService == null) {
+            netWorthLabel.setText("N/A (Service unavailable)");
+            return;
+        }
+        CurrencyItem selectedDisplayCurrencyItem = netWorthCurrencyComboBox.getValue();
+        String displayCurrencyCode = (selectedDisplayCurrencyItem != null) ? selectedDisplayCurrencyItem.getCode() : DEFAULT_NET_WORTH_CURRENCY;
+        if (selectedDisplayCurrencyItem == null) { // Ensure ComboBox has a value if it was null
+            CurrencyItem fallbackItem = findCurrencyItemByCode(DEFAULT_NET_WORTH_CURRENCY, netWorthCurrencyComboBox);
+            if (fallbackItem == null && !netWorthCurrencyComboBox.getItems().isEmpty()) {
+                fallbackItem = netWorthCurrencyComboBox.getItems().get(0);
+            }
+            netWorthCurrencyComboBox.setValue(fallbackItem);
+            if(fallbackItem != null) displayCurrencyCode = fallbackItem.getCode();
+        }
+        BigDecimal netWorthInSelectedCurrency = assetService.calculateUserNetWorthInBase(userId, displayCurrencyCode);
+        netWorthLabel.setText(String.format("%.2f %s", netWorthInSelectedCurrency, displayCurrencyCode));
+    }
+
+    private void refreshAssets() {
+        UUID currentUserId = (authService != null && authService.getCurrentUser() != null) ? authService.getCurrentUser().getId() : null;
+        if (currentUserId == null) {
+            if (assetsList != null) assetsList.clear();
+            updateNetWorth(null);
+            return;
+        }
+        if (assetService == null) {
+            if (assetsList != null) assetsList.clear();
+            updateNetWorth(currentUserId); // Will show service unavailable
+            return;
+        }
+        List<Asset> userAssets = assetService.getAssets(currentUserId);
+        assetsList.setAll(userAssets);
+        updateNetWorth(currentUserId);
+    }
+
+    // DEFINITION OF handleRemoveAssetClicked
     private void handleRemoveAssetClicked(Asset assetToRemove) {
         if (assetService == null) {
-            System.err.println("AssetService not initialized in AssetController for removal.");
+            showErrorAlert("Service Error", "Asset service is not initialized.");
             return;
         }
         Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -148,112 +201,197 @@ public class AssetController {
         confirmationDialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 if (assetService.removeAsset(assetToRemove.getId())) {
-                    assetsChanged();
-                    System.out.println("Asset removed successfully.");
+                    assetsChanged(); // This will call refreshAssets -> updateNetWorth
+                    System.out.println("Asset removed successfully: " + assetToRemove.getName());
                 } else {
-                    if (assetView != null) {
-                        // assetView.onRemoveAssetFail(); // Assuming AssetView has such a method
-                    } else {
-                        System.err.println("Failed to remove asset. (AssetView is null)");
-                        new Alert(Alert.AlertType.ERROR, "Could not delete the asset.").showAndWait();
-                    }
+                    showErrorAlert("Deletion Failed", "Could not delete the asset: " + assetToRemove.getName());
                 }
             }
         });
     }
 
-    private void refreshAssets() {
-        // System.out.println("AssetController: refreshAssets() called");
-        if (authService == null || authService.getCurrentUser() == null) {
-            if(assetsList != null) assetsList.clear();
-            if(netWorthLabel != null) netWorthLabel.setText("N/A");
-            System.err.println("Cannot refresh assets: AuthService not initialized or no current user.");
+    private void handleEditAssetClicked(Asset assetToEdit) {
+        if (assetService == null) {
+            showErrorAlert("Service Error", "Asset service is not initialized.");
             return;
         }
-        if (assetService == null) {
-            if(assetsList != null) assetsList.clear();
-            if(netWorthLabel != null) netWorthLabel.setText("N/A");
-            System.err.println("Cannot refresh assets: AssetService not initialized.");
-            return;
+        Dialog<Asset> dialog = new Dialog<>();
+        dialog.setTitle("Edit Asset");
+        dialog.setHeaderText("Edit details for: " + assetToEdit.getName());
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        GridPane grid = new GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        TextField nameField = new TextField(assetToEdit.getName());
+        ComboBox<AssetType> typeComboBox = new ComboBox<>(FXCollections.observableArrayList(AssetType.values()));
+        typeComboBox.setValue(assetToEdit.getType());
+        TextField purchasePriceField = new TextField(assetToEdit.getPurchasePrice() != null ? assetToEdit.getPurchasePrice().toPlainString() : "0");
+        DatePicker purchaseDatePicker = new DatePicker();
+        if (assetToEdit.getPurchaseDate() != null) {
+            purchaseDatePicker.setValue(assetToEdit.getPurchaseDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
-
-        UUID currentUserId = authService.getCurrentUser().getId();
-        List<Asset> userAssets = assetService.getAssets(currentUserId);
-        assetsList.setAll(userAssets);
-        updateNetWorth(currentUserId);
-    }
-
-    private void updateNetWorth(UUID userId) {
-        if (assetService == null) {
-            if(netWorthLabel != null) netWorthLabel.setText("N/A");
-            System.err.println("Cannot update net worth: AssetService not initialized.");
-            return;
-        }
-        BigDecimal netWorth = assetService.calculateValuation(assetsList); // Use current assetsList
-        if (netWorthLabel != null) {
-            netWorthLabel.setText(String.format("%.2f", netWorth));
-        }
-    }
-
-    public boolean addAssetViaForm(Asset asset) {
-        if (assetService == null) {
-            System.err.println("AssetService not initialized in AssetController for adding.");
-            return false;
-        }
-        boolean success = assetService.addAsset(asset);
-        if (success) {
-            assetsChanged();
-        } else {
-            if (assetView != null) {
-                // assetView.onAddAssetFail(); // Assuming AssetView has such a method
-            } else {
-                System.err.println("Failed to add asset. (AssetView is null)");
-                new Alert(Alert.AlertType.ERROR, "Could not add the asset.").showAndWait();
+        TextField currentValueField = new TextField(assetToEdit.getCurrentValue() != null ? assetToEdit.getCurrentValue().toPlainString() : "0");
+        CurrencyComboBox dialogCurrencyPicker = new CurrencyComboBox();
+        CurrencyItem initialDialogCurrencyItem = (assetToEdit.getCurrency() != null) ?
+                findCurrencyItemByCode(assetToEdit.getCurrency().getCurrencyCode(), dialogCurrencyPicker) : null;
+        if (initialDialogCurrencyItem == null) {
+            initialDialogCurrencyItem = findCurrencyItemByCode("USD", dialogCurrencyPicker);
+            if (initialDialogCurrencyItem == null && !dialogCurrencyPicker.getItems().isEmpty()) {
+                initialDialogCurrencyItem = dialogCurrencyPicker.getItems().get(0);
             }
         }
-        return success;
+        dialogCurrencyPicker.setValue(initialDialogCurrencyItem);
+        CheckBox zakatableCheckBox = new CheckBox("Is Zakatable?");
+        zakatableCheckBox.setSelected(assetToEdit.isZakatable());
+        grid.add(new Label("Name:"), 0, 0); grid.add(nameField, 1, 0);
+        grid.add(new Label("Type:"), 0, 1); grid.add(typeComboBox, 1, 1);
+        grid.add(new Label("Purchase Price:"), 0, 2); grid.add(purchasePriceField, 1, 2);
+        grid.add(new Label("Purchase Date:"), 0, 3); grid.add(purchaseDatePicker, 1, 3);
+        grid.add(new Label("Current Value:"), 0, 4); grid.add(currentValueField, 1, 4);
+        grid.add(new Label("Currency:"), 0, 5); grid.add(dialogCurrencyPicker, 1, 5);
+        grid.add(zakatableCheckBox, 1, 6);
+        ObjectProperty<CurrencyItem> currentDialogFieldsCurrency = new SimpleObjectProperty<>(dialogCurrencyPicker.getValue());
+        dialogCurrencyPicker.valueProperty().addListener((obs, oldCI, newCI) -> {
+            if (oldCI != null && newCI != null && !oldCI.getCode().equals(newCI.getCode())) {
+                try {
+                    BigDecimal oldPP = new BigDecimal(purchasePriceField.getText());
+                    BigDecimal oldCV = new BigDecimal(currentValueField.getText());
+                    purchasePriceField.setText(CurrencyConversion.convert(oldCI.getCode(), newCI.getCode(), oldPP).setScale(2, RoundingMode.HALF_UP).toPlainString());
+                    currentValueField.setText(CurrencyConversion.convert(oldCI.getCode(), newCI.getCode(), oldCV).setScale(2, RoundingMode.HALF_UP).toPlainString());
+                    currentDialogFieldsCurrency.set(newCI);
+                } catch (Exception e) { System.err.println("Currency conversion error in edit dialog: " + e.getMessage());}
+            } else if (newCI != null) { currentDialogFieldsCurrency.set(newCI); }
+        });
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(nameField::requestFocus);
+        dialog.setResultConverter(db -> {
+            if (db == saveButtonType) {
+                try {
+                    CurrencyItem selCurItem = dialogCurrencyPicker.getValue();
+                    if (nameField.getText().trim().isEmpty() || typeComboBox.getValue() == null || selCurItem == null) {
+                        showErrorAlert("Validation Error", "Name, Type, and Currency are required."); return null;
+                    }
+                    return new Asset(assetToEdit.getUserId(), nameField.getText().trim(), typeComboBox.getValue(),
+                            new BigDecimal(purchasePriceField.getText().trim()),
+                            (purchaseDatePicker.getValue() != null) ? Date.from(purchaseDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()) : null,
+                            new BigDecimal(currentValueField.getText().trim()), Currency.getInstance(selCurItem.getCode()),
+                            zakatableCheckBox.isSelected());
+                } catch (Exception e) { showErrorAlert("Invalid Input", "Error processing input: " + e.getMessage()); return null;}
+            }
+            return null;
+        });
+        Optional<Asset> result = dialog.showAndWait();
+        result.ifPresent(editedAssetData -> {
+            if (assetService.updateAsset(assetToEdit.getId(), editedAssetData)) {
+                assetsChanged();
+            } else {
+                showErrorAlert("Update Failed", "Could not update the asset.");
+            }
+        });
+    }
+
+    // Changed return type to void
+    public void addAssetViaForm(Asset asset) {
+        if (assetService == null) {
+            showErrorAlert("Service Error", "Asset service not initialized.");
+            return;
+        }
+        if (assetService.addAsset(asset)) {
+            assetsChanged();
+        } else {
+            showErrorAlert("Add Failed", "Could not add the asset.");
+        }
     }
 
     @FXML
     private void handleAddAsset() {
-        System.out.println("Add Asset button clicked. Implement dialog here.");
         if (authService == null || authService.getCurrentUser() == null) {
-            System.err.println("Cannot add asset: AuthService not initialized or no current user.");
-            return;
+            showErrorAlert("Authentication Error", "No current user."); return;
+        }
+        if (assetService == null) {
+            showErrorAlert("Service Error", "Asset service not initialized."); return;
         }
         UUID currentUserId = authService.getCurrentUser().getId();
-        Asset newAsset = new Asset(
-                currentUserId,
-                "New Asset " + (assetsList.size() + 1),
-                AssetType.STOCKS,
-                new BigDecimal("1000.00"),
-                new Date(),
-                new BigDecimal("1100.00"),
-                Currency.getInstance("USD"),
-                true
-        );
-        addAssetViaForm(newAsset);
+        Dialog<Asset> dialog = new Dialog<>();
+        dialog.setTitle("Add New Asset");
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+        GridPane grid = new GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        TextField nameField = new TextField(); nameField.setPromptText("e.g., Gold Bar");
+        ComboBox<AssetType> typeComboBox = new ComboBox<>(FXCollections.observableArrayList(AssetType.values()));
+        typeComboBox.setPromptText("Select Type");
+        TextField purchasePriceField = new TextField("0"); purchasePriceField.setPromptText("e.g., 1000.00");
+        DatePicker purchaseDatePicker = new DatePicker(LocalDate.now());
+        TextField currentValueField = new TextField("0"); currentValueField.setPromptText("e.g., 1100.00");
+        CurrencyComboBox dialogCurrencyPicker = new CurrencyComboBox();
+        CurrencyItem defaultDialogCurrency = findCurrencyItemByCode("USD", dialogCurrencyPicker);
+        if (defaultDialogCurrency == null && !dialogCurrencyPicker.getItems().isEmpty()) {
+            defaultDialogCurrency = dialogCurrencyPicker.getItems().get(0);
+        }
+        dialogCurrencyPicker.setValue(defaultDialogCurrency);
+        CheckBox zakatableCheckBox = new CheckBox("Is Zakatable?");
+        grid.add(new Label("Name:"), 0, 0); grid.add(nameField, 1, 0);
+        grid.add(new Label("Type:"), 0, 1); grid.add(typeComboBox, 1, 1);
+        grid.add(new Label("Purchase Price:"), 0, 2); grid.add(purchasePriceField, 1, 2);
+        grid.add(new Label("Purchase Date:"), 0, 3); grid.add(purchaseDatePicker, 1, 3);
+        grid.add(new Label("Current Value:"), 0, 4); grid.add(currentValueField, 1, 4);
+        grid.add(new Label("Currency:"), 0, 5); grid.add(dialogCurrencyPicker, 1, 5);
+        grid.add(zakatableCheckBox, 1, 6);
+        ObjectProperty<CurrencyItem> currentDialogFieldsCurrency = new SimpleObjectProperty<>(dialogCurrencyPicker.getValue());
+        dialogCurrencyPicker.valueProperty().addListener((obs, oldCI, newCI) -> {
+            if (oldCI != null && newCI != null && !oldCI.getCode().equals(newCI.getCode())) {
+                try {
+                    BigDecimal oldPP = new BigDecimal(purchasePriceField.getText());
+                    BigDecimal oldCV = new BigDecimal(currentValueField.getText());
+                    purchasePriceField.setText(CurrencyConversion.convert(oldCI.getCode(), newCI.getCode(), oldPP).setScale(2, RoundingMode.HALF_UP).toPlainString());
+                    currentValueField.setText(CurrencyConversion.convert(oldCI.getCode(), newCI.getCode(), oldCV).setScale(2, RoundingMode.HALF_UP).toPlainString());
+                    currentDialogFieldsCurrency.set(newCI);
+                } catch (Exception e) { System.err.println("Currency conversion error in add dialog: " + e.getMessage());}
+            } else if (newCI != null) { currentDialogFieldsCurrency.set(newCI); }
+        });
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(nameField::requestFocus);
+        dialog.setResultConverter(db -> {
+            if (db == addButtonType) {
+                try {
+                    CurrencyItem selCurItem = dialogCurrencyPicker.getValue();
+                    if (nameField.getText().trim().isEmpty() || typeComboBox.getValue() == null ||
+                            purchasePriceField.getText().trim().isEmpty() || currentValueField.getText().trim().isEmpty() || selCurItem == null) {
+                        showErrorAlert("Validation Error", "All fields (Name, Type, Prices, Currency) are required."); return null;
+                    }
+                    return new Asset(currentUserId, nameField.getText().trim(), typeComboBox.getValue(),
+                            new BigDecimal(purchasePriceField.getText().trim()),
+                            (purchaseDatePicker.getValue() != null) ? Date.from(purchaseDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()) : new Date(),
+                            new BigDecimal(currentValueField.getText().trim()), Currency.getInstance(selCurItem.getCode()),
+                            zakatableCheckBox.isSelected());
+                } catch (Exception e) { showErrorAlert("Invalid Input", "Error processing input: " + e.getMessage()); return null;}
+            }
+            return null;
+        });
+        Optional<Asset> result = dialog.showAndWait();
+        result.ifPresent(this::addAssetViaForm);
     }
 
     @FXML
     public void handleRefreshAssets() {
-        // System.out.println("AssetController: Refresh button clicked.");
         refreshAssets();
     }
 
     @FXML
     private void handleReturnToDashboard() {
-        // System.out.println("AssetController: Return to Dashboard button clicked.");
         if (sceneManager != null) {
             try {
                 sceneManager.showDashboardView();
             } catch (IOException e) {
                 System.err.println("Failed to navigate to Dashboard: " + e.getMessage());
-                new Alert(Alert.AlertType.ERROR, "Could not load the dashboard. Please try again.").showAndWait();
+                showErrorAlert("Navigation Error", "Could not load the dashboard.");
                 e.printStackTrace();
             }
         } else {
-            System.err.println("SceneManager is null in AssetController. Cannot navigate.");
+            System.err.println("SceneManager is null in AssetController.");
         }
     }
 
