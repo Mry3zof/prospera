@@ -13,14 +13,15 @@ public class ZakatAndComplianceService {
 
     static private final double GOLD_NISAB_WEIGHT = 87.48;
     static private final double SILVER_NISAB_WEIGHT = 612.36;
+    static private final double ZAKAT_PERCENTAGE = 2.5 / 100.0;
 
     public ZakatAndComplianceService(AssetRepository assetRepo) {
         this.assetRepo = assetRepo;
     }
 
-    public BigDecimal calculateZakat(double nisab, UUID userId) {
-        List<Asset> assets = assetRepo.getUserAssets(userId);
-        return BigDecimal.ZERO;
+    public static BigDecimal calculateZakat(double nisab, List<Asset> selectedAssets) {
+        BigDecimal total = selectedAssets.stream().map(Asset::getCurrentValue).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return total.compareTo(BigDecimal.valueOf(nisab)) >= 0 ? total.multiply(BigDecimal.valueOf(ZAKAT_PERCENTAGE)) : BigDecimal.ZERO;
     }
 
     public List<Asset> getZakatableAssets(UUID userId) {

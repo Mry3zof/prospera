@@ -5,6 +5,7 @@ import fcai.prospera.CurrencyConversion;
 import fcai.prospera.CurrencyItem;
 import fcai.prospera.SceneManager;
 import fcai.prospera.model.*;
+import fcai.prospera.service.AssetService;
 import fcai.prospera.service.ZakatAndComplianceService;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.AuthService;
@@ -101,9 +102,10 @@ public class ZakatAndComplianceController {
 
     private ZakatAndComplianceService zakatService;
     private AuthService authService;
-    private SceneManager sceneManager;
+    private AssetService assetService;
 
     static private List<Asset> selectedAssets; // TODO: consider switching to asset id
+    private SceneManager sceneManager;
 
     @FXML private AnchorPane root;
 
@@ -132,10 +134,11 @@ public class ZakatAndComplianceController {
     private static double silverExchangeRate = 52.22;
     private static CurrencyItem exchangeCurrency = new CurrencyItem("EGP", "Egyptian Pound", "£");
 
-    public void init(SceneManager sceneManager, AuthService authService, ZakatAndComplianceService zakatService, String view) {
+    public void init(SceneManager sceneManager, AuthService authService, ZakatAndComplianceService zakatService, AssetService assetService, String view) {
         this.sceneManager = sceneManager;
         this.authService = authService;
         this.zakatService = zakatService;
+        this.assetService = assetService;
 
         switch (view) {
             case "MAIN":
@@ -214,11 +217,8 @@ public class ZakatAndComplianceController {
         value_col.setCellValueFactory(new PropertyValueFactory<>("currentValue"));
 //        zakatable_col.setCellValueFactory(new PropertyValueFactory<>("zakatable")); TODO: consider removing this
 
-        assets.addAll(
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset1", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(120), Currency.getInstance("USD"), true)),
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset2", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(1200), Currency.getInstance("USD"), true)),
-                new SelectableAsset(new Asset(UUID.randomUUID(), "asset3", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(124), Currency.getInstance("USD"), true))
-        ); // TODO: fetch from DB
+        List<Asset> userAssets = assetService.getAssets(authService.getCurrentUser().getId());
+        userAssets.forEach(asset -> assets.add(new SelectableAsset(asset)));
 
         // TODO: make selection persistent
 
@@ -246,16 +246,16 @@ public class ZakatAndComplianceController {
 
         System.out.println(goldNisab + " " + silverNisab);
         double applicableNisab = Math.min(goldNisab, silverNisab);
-        BigDecimal zakatAmount = zakatService.calculateZakat(applicableNisab, authService.getCurrentUser().getId());
+        BigDecimal zakatAmount = ZakatAndComplianceService.calculateZakat(applicableNisab, selectedAssets);
 
         results_list.getItems().addAll(
-                "Gold Nisab: " + goldNisab,
-                "Silver Nisab: " + silverNisab,
-                "Applicable Nisab: " + applicableNisab,
+                "Gold Nisab: " + goldNisab + " " + exchangeCurrency.getCode(),
+                "Silver Nisab: " + silverNisab + " " + exchangeCurrency.getCode(),
+                "Applicable Nisab: " + applicableNisab + " " + exchangeCurrency.getCode(),
                 "-------------------------------------",
-                "Total Assets Value: " + selectedAssets.stream().map(Asset::getCurrentValue).reduce(BigDecimal.ZERO, BigDecimal::add),
+                "Total Assets Value: " + selectedAssets.stream().map(Asset::getCurrentValue).reduce(BigDecimal.ZERO, BigDecimal::add) + " " + exchangeCurrency.getCode(),
                 "-------------------------------------",
-                "Zakat amount: " + zakatAmount
+                "Zakat amount: " + zakatAmount + " " + exchangeCurrency.getCode()
         );
 
     }
@@ -312,7 +312,6 @@ public class ZakatAndComplianceController {
     private Boolean canCalculateZakat() {
         return selectedAssets != null && !selectedAssets.isEmpty();
     }
-
 
     /*
     TODO: implement zakat calculation view

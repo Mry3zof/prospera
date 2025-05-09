@@ -100,7 +100,7 @@ public class SceneManager {
 
     public void showZakatView() throws IOException {
         switchScene("zakat.fxml", controller -> {
-            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, "MAIN");
+            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, assetService, "MAIN");
         });
     }
 
@@ -112,13 +112,13 @@ public class SceneManager {
 
     public void showZakatChooseAssetsView() throws IOException {
         switchScene("zakat-select-assets.fxml", controller -> {
-            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, "SELECTION");
+            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, assetService, "SELECTION");
         });
     }
 
     public void showZakatResultView() throws IOException {
         switchScene("zakat-result.fxml", controller -> {
-            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, "RESULTS");
+            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, assetService, "RESULTS");
         });
     }
 }

@@ -107,10 +107,10 @@ public class AssetFileRepository implements AssetRepository {
         return userAssets;
     }
 
-    // TODO: implement
     @Override
     public BigDecimal calculateNetWorth(UUID userId) {
-        return null;
+        List<Asset> userAssets = getUserAssets(userId);
+        return userAssets.stream().map(Asset::getCurrentValue).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
