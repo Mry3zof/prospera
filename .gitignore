@@ -42,4 +42,4 @@ out/
 Thumbs.db
 
 # Editor backup files
-*~
+*.java~

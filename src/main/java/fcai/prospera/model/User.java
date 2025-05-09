@@ -19,8 +19,8 @@ public class User implements Serializable {
 
     public User(String username, String email, String passwordHash) {
         this.id = UUID.nameUUIDFromBytes(email.getBytes());
-        this.username = username;
-        this.email = email;
+        this.username = username.toLowerCase().trim();
+        this.email = email.toLowerCase().trim();
         this.passwordHash = passwordHash;
     }
 
@@ -37,7 +37,7 @@ public class User implements Serializable {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.toLowerCase().trim();
     }
 
     public String getEmail() {
@@ -45,7 +45,7 @@ public class User implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase().trim();
     }
 
     public String getPasswordHash() {
