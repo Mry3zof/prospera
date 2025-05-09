@@ -100,21 +100,25 @@ public class SceneManager {
 
     public void showZakatView() throws IOException {
         switchScene("zakat.fxml", controller -> {
-            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, false);
+            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, "MAIN");
         });
     }
 
     public void showAssetsView() throws IOException {
-        switchScene("assets.fxml", controller -> { // Assuming assets.fxml is the name
-            // If AssetView is an interface and you have an implementation:
-            // if (this.assetViewInstance == null) this.assetViewInstance = new ConcreteAssetViewImplementation();
+        switchScene("assets.fxml", controller -> {
             ((AssetController) controller).init(this, authService, assetService);
         });
     }
 
     public void showZakatChooseAssetsView() throws IOException {
         switchScene("zakat-select-assets.fxml", controller -> {
-            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, true);
+            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, "SELECTION");
+        });
+    }
+
+    public void showZakatResultView() throws IOException {
+        switchScene("zakat-result.fxml", controller -> {
+            ((ZakatAndComplianceController) controller).init(this, authService, zakatService, "RESULTS");
         });
     }
 }
