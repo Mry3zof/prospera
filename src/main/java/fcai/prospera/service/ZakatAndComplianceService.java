@@ -11,11 +11,14 @@ import java.util.UUID;
 public class ZakatAndComplianceService {
     private final AssetRepository assetRepo;
 
+    static private final double GOLD_NISAB_WEIGHT = 87.48;
+    static private final double SILVER_NISAB_WEIGHT = 612.36;
+
     public ZakatAndComplianceService(AssetRepository assetRepo) {
         this.assetRepo = assetRepo;
     }
 
-    public BigDecimal calculateZakat(UUID userId) {
+    public BigDecimal calculateZakat(double nisab, UUID userId) {
         List<Asset> assets = assetRepo.getUserAssets(userId);
         return BigDecimal.ZERO;
     }
@@ -24,11 +27,15 @@ public class ZakatAndComplianceService {
         return Collections.emptyList();
     }
 
-    public boolean isAssetHalalCompliant(UUID assetId) {
-        return false;
+    static public double getGoldNisab(double goldExchangeRate) {
+        return goldExchangeRate * GOLD_NISAB_WEIGHT;
     }
 
-    public Map<Asset, BigDecimal> getPurificationAmount(UUID userId) {
-        return Collections.emptyMap();
+    static public double getSilverNisab(double silverExchangeRate) {
+        return silverExchangeRate * SILVER_NISAB_WEIGHT;
     }
+
+
+
+
 }

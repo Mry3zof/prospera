@@ -8,15 +8,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fcai.prospera.controller.ZakatAndComplianceController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fcai.prospera.controller.ZakatAndComplianceController" fx:id="root">
     <children>
         <VBox layoutX="244.0" layoutY="91.0" prefHeight="400.0" prefWidth="600.0" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
             <children>
-                <TableView fx:id="assets_table" editable="true" prefHeight="300.0" prefWidth="580.0">
-                    <columns>
+                <TableView fx:id="assets_table" editable="true" maxHeight="1.7976931348623157E308" prefWidth="580.0" VBox.vgrow="ALWAYS">
+                <columns>
                         <TableColumn fx:id="select_col" prefWidth="75.0" text="Include" />
                         <TableColumn fx:id="icon_col" prefWidth="75.0" text="Icon" />
                         <TableColumn fx:id="name_col" prefWidth="150.0" text="Name" />
