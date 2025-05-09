@@ -8,12 +8,12 @@ public class User {
     private String email;
     private String passwordHash; // TODO: how will this be done
 
-    public User() {
-        this.id = UUID.randomUUID();
-    }
+//    public User() {
+//        this.id = UUID.randomUUID();
+//    } TODO: consider removing this because an email is required to create a UUID that can be used as a primary key
 
     public User(String username, String email, String passwordHash) {
-        this.id = UUID.randomUUID();
+        this.id = UUID.nameUUIDFromBytes(email.getBytes());
         this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
