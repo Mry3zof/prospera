@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ZakatAndComplianceController {
-    public class SelectableAsset {
+    public static class SelectableAsset {
         private final Asset asset;
         private final BooleanProperty selected = new SimpleBooleanProperty(false);
         private final ObjectProperty<Image> icon = new SimpleObjectProperty<>();
