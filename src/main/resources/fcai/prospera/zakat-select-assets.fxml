@@ -21,7 +21,9 @@
                         <TableColumn fx:id="icon_col" prefWidth="75.0" text="Icon" />
                         <TableColumn fx:id="name_col" prefWidth="150.0" text="Name" />
                         <TableColumn fx:id="value_col" prefWidth="100.0" text="Value ($)" />
-                        <TableColumn fx:id="zakatable_col" prefWidth="100.0" text="Is Zakatable" />
+<!--                        <TableColumn fx:id="zakatable_col" prefWidth="100.0" text="Is Zakatable" /> TODO: consider removing this-->
+                        <TableColumn fx:id="hawl_date_col" prefWidth="100.0" text="Hawl Date" />
+                        <TableColumn fx:id="hawl_date_passed_col" prefWidth="100.0" text="Hawl Date Passed" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

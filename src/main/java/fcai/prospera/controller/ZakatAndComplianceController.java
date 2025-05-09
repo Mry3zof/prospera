@@ -9,10 +9,7 @@ import fcai.prospera.service.ZakatAndComplianceService;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.AuthService;
 import fcai.prospera.view.ZakatAndComplianceView;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,6 +27,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,7 +112,10 @@ public class ZakatAndComplianceController {
     @FXML private TableColumn<SelectableAsset, Image> icon_col;
     @FXML private TableColumn<SelectableAsset, String> name_col;
     @FXML private TableColumn<SelectableAsset, BigDecimal> value_col;
-    @FXML private TableColumn<SelectableAsset, Boolean> zakatable_col;
+//    @FXML private TableColumn<SelectableAsset, Boolean> zakatable_col; TODO: consider removing this
+    @FXML private TableColumn<SelectableAsset, String> hawl_date_col;
+    @FXML private TableColumn<SelectableAsset, Boolean> hawl_date_passed_col;
+
 
     @FXML private TextField gold_rate_field;
     @FXML private TextField silver_rate_field;
@@ -211,7 +212,7 @@ public class ZakatAndComplianceController {
 
         name_col.setCellValueFactory(new PropertyValueFactory<>("name"));
         value_col.setCellValueFactory(new PropertyValueFactory<>("currentValue"));
-        zakatable_col.setCellValueFactory(new PropertyValueFactory<>("zakatable"));
+//        zakatable_col.setCellValueFactory(new PropertyValueFactory<>("zakatable")); TODO: consider removing this
 
         assets.addAll(
                 new SelectableAsset(new Asset(UUID.randomUUID(), "asset1", AssetType.GOLD, BigDecimal.valueOf(100), new Date(), BigDecimal.valueOf(120), Currency.getInstance("USD"), true)),
@@ -220,6 +221,19 @@ public class ZakatAndComplianceController {
         ); // TODO: fetch from DB
 
         // TODO: make selection persistent
+
+        hawl_date_col.setCellValueFactory(cellData -> {
+//            Date hawlDate = zakatService.getHawlDate(cellData.getValue().getAsset().getId());
+            Date hawlDate = new Date(); // TODO: remove this
+            String formattedDate = hawlDate == null ? "" : new SimpleDateFormat("yyyy-MM-dd").format(hawlDate);
+            return new SimpleStringProperty(formattedDate);
+        });
+
+        hawl_date_passed_col.setCellValueFactory(cellData -> {
+//            Boolean hasPassed = zakatService.hasHawlPassed(cellData.getValue().getAsset().getId());
+            Boolean hasPassed = true; // TODO: remove this
+            return new SimpleBooleanProperty(hasPassed);
+        });
 
         assets_table.setItems(assets);
     }
@@ -302,7 +316,6 @@ public class ZakatAndComplianceController {
 
     /*
     TODO: implement zakat calculation view
-    TODO: either implement asset input form or remove it
     TODO: purchase date and hawl due in the asset selection view
      */
 }

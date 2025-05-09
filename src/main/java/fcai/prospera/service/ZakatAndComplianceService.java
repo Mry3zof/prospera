@@ -35,7 +35,17 @@ public class ZakatAndComplianceService {
         return silverExchangeRate * SILVER_NISAB_WEIGHT;
     }
 
+    public Date getHawlDate(UUID assetId) {
+        Date purchaseDate = assetRepo.getAssetById(assetId).getPurchaseDate();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(purchaseDate);
+        cal.add(Calendar.DAY_OF_YEAR, 354); // one lunar year after purchase date
+        return cal.getTime();
+    }
 
-
-
+    public Boolean hasHawlPassed(UUID assetId) {
+        Date hawlDate = getHawlDate(assetId);
+        Date now = new Date();
+        return hawlDate.before(now) || hawlDate.equals(now);
+    }
 }
