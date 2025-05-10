@@ -5,9 +5,17 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A utility class to handle currency conversion
+ */
 public class CurrencyConversion {
     private static final Map<String, BigDecimal> conversionRates = new HashMap<>();
 
+    /**
+     * Adds a conversion rate to the conversion rates map (base rate is USD)
+     * @param fromCode : the currency code to convert from
+     * @param rate : the conversion rate
+     */
     public static void addConversionRate(String fromCode, BigDecimal rate) {
         conversionRates.put(fromCode, rate);
     }
@@ -19,6 +27,13 @@ public class CurrencyConversion {
         addConversionRate("EGP", new BigDecimal("0.020"));
     }
 
+    /**
+     * Converts an amount from one currency to another
+     * @param fromCode : the currency code to convert from
+     * @param toCode : the currency code to convert to
+     * @param amount : the amount to convert
+     * @return the converted amount
+     */
     public static BigDecimal convert(String fromCode, String toCode, BigDecimal amount) {
         BigDecimal fromRate = conversionRates.get(fromCode);
         BigDecimal toRate = conversionRates.get(toCode);

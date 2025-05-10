@@ -6,6 +6,9 @@ import javafx.scene.control.ListCell;
 
 import java.util.List;
 
+/**
+ * This is a JavaFX custom component that extends the ComboBox class and adds a custom cell factory to display the currency code and name in the dropdown menu.
+ */
 public class CurrencyComboBox extends ComboBox<CurrencyItem> {
 
     public CurrencyComboBox() {
@@ -26,6 +29,10 @@ public class CurrencyComboBox extends ComboBox<CurrencyItem> {
         });
     }
 
+    /**
+     * A list of default currencies (USD, EUR, GBP, EGP) to populate the dropdown menu with.
+     * @return A list of CurrencyItem objects
+     */
     private static List<CurrencyItem> getDefaultCurrencies() {
         return List.of(
                 new CurrencyItem("USD", "United States Dollar", "$"),

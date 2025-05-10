@@ -17,6 +17,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+/**
+ * A class to manage switching stages between different views
+ */
 public class SceneManager {
     private final Stage stage;
 
@@ -38,6 +41,12 @@ public class SceneManager {
         // If AssetView is just for simple alerts, AssetController can handle it being null.
     }
 
+    /**
+     * Switches to a new scene using the provided FXML file and controller injector.
+     * @param fxmlFile : the FXML file to load
+     * @param controllerInjector : the controller injector
+     * @throws IOException : if an I/O error occurs
+     */
     private void switchScene(String fxmlFile, Consumer<Object> controllerInjector) throws IOException {
         // Assuming fxmlFile is just the filename e.g. "assets.fxml"
         // and FXML files are in the same package as SceneManager or a subpackage.
@@ -73,48 +82,80 @@ public class SceneManager {
         // stage.centerOnScreen(); // Optional
     }
 
+    /**
+     * Switches to the authentication view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showAuthView() throws IOException {
         switchScene("auth.fxml", controller -> {
             ((AuthController) controller).init(this, authService);
         });
     }
 
+    /**
+     * Switches to the login view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showLoginView() throws IOException {
         switchScene("auth-login.fxml", controller -> {
             ((AuthController) controller).init(this, authService);
         });
     }
 
+    /**
+     * Switches to the signup view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showSignupview() throws IOException {
         switchScene("auth-signup.fxml", controller -> {
             ((AuthController) controller).init(this, authService);
         });
     }
 
+    /**
+     * Switches to the dashboard view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showDashboardView() throws IOException {
         switchScene("dashboard.fxml", controller -> { // Assuming dashboard.fxml is the name
             ((DashboardController) controller).init(this, authService);
         });
     }
 
+    /**
+     * Switches to the zakat view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showZakatView() throws IOException {
         switchScene("zakat.fxml", controller -> {
             ((ZakatAndComplianceController) controller).init(this, authService, zakatService, assetService, "MAIN");
         });
     }
 
+    /**
+     * Switches to the assets view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showAssetsView() throws IOException {
         switchScene("assets.fxml", controller -> {
             ((AssetController) controller).init(this, authService, assetService);
         });
     }
 
+    /**
+     * Switches to the zakat choose assets view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showZakatChooseAssetsView() throws IOException {
         switchScene("zakat-select-assets.fxml", controller -> {
             ((ZakatAndComplianceController) controller).init(this, authService, zakatService, assetService, "SELECTION");
         });
     }
 
+    /**
+     * Switches to the zakat result view.
+     * @throws IOException : if an I/O error occurs
+     */
     public void showZakatResultView() throws IOException {
         switchScene("zakat-result.fxml", controller -> {
             ((ZakatAndComplianceController) controller).init(this, authService, zakatService, assetService, "RESULTS");
