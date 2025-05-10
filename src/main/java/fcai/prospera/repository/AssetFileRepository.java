@@ -73,6 +73,13 @@ public class AssetFileRepository implements AssetRepository {
         return true;
     }
 
+    /**
+     * Updates the asset with the given ID with the given new asset data.
+     *
+     * @param assetId the ID of the asset to update
+     * @param newAsset the new asset data
+     * @return true if the update is successful, false otherwise
+     */
     @Override
     public boolean updateAsset(UUID assetId, Asset newAsset) {
         if (assetId == null || newAsset == null || !assets.containsKey(assetId)) {
@@ -84,6 +91,13 @@ public class AssetFileRepository implements AssetRepository {
         return true;
     }
 
+    /**
+     * Updates the current value of the specified asset.
+     *
+     * @param assetId the UUID of the asset to update
+     * @param newValue the new value to set for the asset
+     * @return true if the asset's value was successfully updated, false if the asset does not exist or input is invalid
+     */
     @Override
     public boolean updateCurrentValue(UUID assetId, BigDecimal newValue) {
         if (assetId == null || newValue == null || !assets.containsKey(assetId)) {
@@ -117,12 +131,25 @@ public class AssetFileRepository implements AssetRepository {
         return userAssets;
     }
 
+    /**
+     * Calculates the total net worth of a user's assets
+     * @param userId the id of the user
+     * @return the total net worth of the user's assets
+     */
     @Override
     public BigDecimal calculateNetWorth(UUID userId) {
         List<Asset> userAssets = getUserAssets(userId);
         return userAssets.stream().map(Asset::getCurrentValue).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    /**
+     * Calculates the percentage of each asset type in a user's assets.
+     * <p>
+     * This method directly sums values and does NOT perform currency conversion.
+     *
+     * @param userId The ID of the user.
+     * @return A map of asset Types to their percentages.
+     */
     @Override
     public Map<AssetType, BigDecimal> getUserAssetDistribution(UUID userId) {
         List<Asset> userAssets = getUserAssets(userId);
@@ -137,11 +164,5 @@ public class AssetFileRepository implements AssetRepository {
             distribution.put(type, distribution.getOrDefault(type, BigDecimal.ZERO).add(percentage));
         }
         return distribution;
-    }
-
-    // TODO: remove?
-    @Override
-    public List<Asset> getNonShariaCompliantAssets(UUID userId) {
-        return List.of();
     }
 }

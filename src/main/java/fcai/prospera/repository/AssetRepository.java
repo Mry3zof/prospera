@@ -67,12 +67,6 @@ public interface AssetRepository {
      * @param userId : user id
      * @return asset distribution
      */
-    Map<AssetType, BigDecimal> getUserAssetDistribution(UUID userId);
 
-    /**
-     * Gets all non-sharia compliant assets for a user
-     * @param userId : user id
-     * @return list of assets
-     */
-    List<Asset> getNonShariaCompliantAssets(UUID userId);
+    Map<AssetType, BigDecimal> getUserAssetDistribution(UUID userId);
 }

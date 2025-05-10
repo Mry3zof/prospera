@@ -30,12 +30,6 @@ public class UserFileRepository implements UserRepository {
 
         try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(usersStorage))) {
             users = (HashMap<UUID, User>) objectIn.readObject();
-
-            // TODO: Remove
-            System.out.println("USERS LOADED FROM: " + USERS_FILE_PATH + ":");
-            for (User user : users.values()) {
-                System.out.println(user.toString());
-            }
         }
         catch (IOException | ClassNotFoundException exception) {
             System.err.println("Error loading users from " + USERS_FILE_PATH + ": " + exception.getMessage());
@@ -48,12 +42,6 @@ public class UserFileRepository implements UserRepository {
     private void saveUsers() {
         try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(usersStorage))) {
             objectOut.writeObject(users);
-
-            // TODO: Remove
-            System.out.println("USERS SAVED TO: " + USERS_FILE_PATH + ":");
-            for (User user : users.values()) {
-                System.out.println(user.toString());
-            }
         }
         catch (IOException exception) {
             System.err.println("Error saving users in " + USERS_FILE_PATH + ": " + exception.getMessage());
