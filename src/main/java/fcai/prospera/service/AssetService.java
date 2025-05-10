@@ -111,8 +111,6 @@ public class AssetService {
      */
     public BigDecimal calculateValuation(List<Asset> assets) {
         if (assets == null || assets.isEmpty()) return BigDecimal.ZERO;
-        // This method still sums directly. It might be less used if
-        // calculateUserNetWorthInBase is the primary way to get total value.
         return assets.stream()
                 .filter(asset -> asset != null && asset.getCurrentValue() != null)
                 .map(Asset::getCurrentValue)
@@ -172,8 +170,7 @@ public class AssetService {
                         System.err.println("Could not convert asset '" + asset.getName() +
                                 "' from " + assetCurrencyCode + " to " + baseCurrencyCode +
                                 ": " + e.getMessage());
-                        // Optionally, skip this asset or add 0, or rethrow if critical
-                        valueInBase = BigDecimal.ZERO; // Or handle as an error
+                        valueInBase = BigDecimal.ZERO;
                     }
                 }
                 totalNetWorthInBase = totalNetWorthInBase.add(valueInBase);
@@ -209,8 +206,6 @@ public class AssetService {
      */
     public Map<AssetType, BigDecimal> getAssetDistributionForUser(UUID userId) {
         if (userId == null) return Collections.emptyMap();
-        // This would also need currency conversion for a meaningful distribution
-        // if assets are in mixed currencies.
         return assetRepo.getUserAssetDistribution(userId);
     }
 
