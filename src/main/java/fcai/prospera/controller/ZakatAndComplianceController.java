@@ -34,14 +34,9 @@ import java.util.stream.Collectors;
 
 public class ZakatAndComplianceController {
     public static class SelectableAsset {
+
         private final Asset asset;
         private final BooleanProperty selected = new SimpleBooleanProperty(false);
-        private final ObjectProperty<Image> icon = new SimpleObjectProperty<>();
-
-        public SelectableAsset(Asset asset, Image icon) {
-            this.asset = asset;
-            this.icon.set(icon);
-        }
 
         public SelectableAsset(Asset asset) {
             this.asset = asset;
@@ -50,12 +45,6 @@ public class ZakatAndComplianceController {
         public SelectableAsset(Asset asset, Boolean selected) {
             this.asset = asset;
             this.selected.set(selected);
-        }
-
-        public SelectableAsset(Asset asset, Image icon, Boolean selected) {
-            this.asset = asset;
-            this.selected.set(selected);
-            this.icon.set(icon);
         }
 
         public Asset getAsset() {
@@ -78,19 +67,6 @@ public class ZakatAndComplianceController {
             this.selected.set(selected);
         }
 
-        public ObjectProperty<Image> iconProperty() {
-            return icon;
-        }
-
-        public Image getIcon() {
-            return icon.get();
-        }
-
-        public void setIcon(Image icon) {
-            this.icon.set(icon);
-        }
-
-        // Convenience getters
         public String getName() {
             return asset.getName();
         }
@@ -104,20 +80,15 @@ public class ZakatAndComplianceController {
     private AuthService authService;
     private AssetService assetService;
 
-    static private List<Asset> selectedAssets; // TODO: consider switching to asset id
+    static private List<Asset> selectedAssets;
     private SceneManager sceneManager;
-
-    @FXML private AnchorPane root;
 
     @FXML private TableView<SelectableAsset> assets_table;
     @FXML private TableColumn<SelectableAsset, Boolean> select_col;
-    @FXML private TableColumn<SelectableAsset, Image> icon_col;
     @FXML private TableColumn<SelectableAsset, String> name_col;
     @FXML private TableColumn<SelectableAsset, BigDecimal> value_col;
-//    @FXML private TableColumn<SelectableAsset, Boolean> zakatable_col; TODO: consider removing this
     @FXML private TableColumn<SelectableAsset, String> hawl_date_col;
     @FXML private TableColumn<SelectableAsset, Boolean> hawl_date_passed_col;
-
 
     @FXML private TextField gold_rate_field;
     @FXML private TextField silver_rate_field;
@@ -125,6 +96,7 @@ public class ZakatAndComplianceController {
     @FXML private Label gold_currency_label;
     @FXML private Label silver_currency_label;
     @FXML private Label error_label;
+    @FXML private Label selected_assets_label;
 
     @FXML private ListView<String> results_list;
 
@@ -205,33 +177,34 @@ public class ZakatAndComplianceController {
             gold_rate_field.setText(String.valueOf(goldExchangeRate));
             silver_rate_field.setText(String.valueOf(silverExchangeRate));
         });
+
+        selected_assets_label.setText((selectedAssets == null ? 0 : selectedAssets.size()) + " assets selected");
     }
 
     private void initSelectionView() {
         select_col.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
         select_col.setCellFactory(CheckBoxTableCell.forTableColumn(select_col));
 
-        // TODO: setup icon cell
-
         name_col.setCellValueFactory(new PropertyValueFactory<>("name"));
         value_col.setCellValueFactory(new PropertyValueFactory<>("currentValue"));
-//        zakatable_col.setCellValueFactory(new PropertyValueFactory<>("zakatable")); TODO: consider removing this
+        value_col.setText("Value (" + exchangeCurrency.getCode() + ")");
 
         List<Asset> userAssets = assetService.getAssets(authService.getCurrentUser().getId());
-        userAssets.forEach(asset -> assets.add(new SelectableAsset(asset)));
+        assets.clear();
 
-        // TODO: make selection persistent
+        for (Asset asset : userAssets) {
+            boolean wasSelected = selectedAssets != null && selectedAssets.contains(asset);
+            assets.add(new SelectableAsset(asset, wasSelected));
+        }
 
         hawl_date_col.setCellValueFactory(cellData -> {
-//            Date hawlDate = zakatService.getHawlDate(cellData.getValue().getAsset().getId());
-            Date hawlDate = new Date(); // TODO: remove this
+            Date hawlDate = zakatService.getHawlDate(cellData.getValue().getAsset().getId());
             String formattedDate = hawlDate == null ? "" : new SimpleDateFormat("yyyy-MM-dd").format(hawlDate);
             return new SimpleStringProperty(formattedDate);
         });
 
         hawl_date_passed_col.setCellValueFactory(cellData -> {
-//            Boolean hasPassed = zakatService.hasHawlPassed(cellData.getValue().getAsset().getId());
-            Boolean hasPassed = true; // TODO: remove this
+            Boolean hasPassed = zakatService.hasHawlPassed(cellData.getValue().getAsset().getId());
             return new SimpleBooleanProperty(hasPassed);
         });
 
@@ -245,23 +218,24 @@ public class ZakatAndComplianceController {
         double silverNisab = ZakatAndComplianceService.getSilverNisab(silverExchangeRate);
 
         System.out.println(goldNisab + " " + silverNisab);
-        double applicableNisab = Math.min(goldNisab, silverNisab);
-        BigDecimal zakatAmount = ZakatAndComplianceService.calculateZakat(applicableNisab, selectedAssets);
+
+        BigDecimal zakatAmountGold = ZakatAndComplianceService.calculateZakat(goldNisab, selectedAssets);
+        BigDecimal zakatAmountSilver = ZakatAndComplianceService.calculateZakat(silverNisab, selectedAssets);
 
         results_list.getItems().addAll(
                 "Gold Nisab: " + goldNisab + " " + exchangeCurrency.getCode(),
                 "Silver Nisab: " + silverNisab + " " + exchangeCurrency.getCode(),
-                "Applicable Nisab: " + applicableNisab + " " + exchangeCurrency.getCode(),
-                "-------------------------------------",
+                "--------------------------------------------------------------------------",
                 "Total Assets Value: " + selectedAssets.stream().map(Asset::getCurrentValue).reduce(BigDecimal.ZERO, BigDecimal::add) + " " + exchangeCurrency.getCode(),
-                "-------------------------------------",
-                "Zakat amount: " + zakatAmount + " " + exchangeCurrency.getCode()
+                "--------------------------------------------------------------------------",
+                "Zakat amount (based on gold - wajib): " + zakatAmountGold + " " + exchangeCurrency.getCode(),
+                "Zakat amount (based on silver - mustahab): " + zakatAmountSilver + " " + exchangeCurrency.getCode()
         );
-
     }
 
     public void onSaveSelection() {
         selectedAssets = assets_table.getItems().stream().filter(SelectableAsset::isSelected).map(SelectableAsset::getAsset).collect(Collectors.toList());
+        showZakatView();
     }
 
     public void onSelectAll() {
@@ -276,7 +250,7 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showZakatChooseAssetsView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle this
+            throw new RuntimeException(e);
         }
     }
 
@@ -284,7 +258,7 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showZakatView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle this
+            throw new RuntimeException(e);
         }
     }
 
@@ -292,7 +266,7 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showDashboardView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle this
+            throw new RuntimeException(e);
         }
     }
 
@@ -305,19 +279,11 @@ public class ZakatAndComplianceController {
         try {
             sceneManager.showZakatResultView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle this
+            throw new RuntimeException(e);
         }
     }
 
     private Boolean canCalculateZakat() {
         return selectedAssets != null && !selectedAssets.isEmpty();
     }
-
-    /*
-    TODO: implement icons
-    TODO: add the ability to choose from gold and silver nisab
-    TODO: redesign results ui
-    TODO: redesign main ui
-    TODO: make columns more readable and make has hawl passed more readable (highlights or something on that line)
-     */
 }

@@ -48,10 +48,13 @@
                         <Label fx:id="silver_currency_label" text="EGP/gram" />
                      </children>
                   </HBox>
+                  <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
                   <CurrencyComboBox fx:id="currency_picker" prefHeight="25.0" prefWidth="264.0" />
                   <HBox alignment="CENTER" prefHeight="43.0" prefWidth="600.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#showChooseAssetsView" text="Choose Assets" />
+                        <Separator prefHeight="11.0" prefWidth="6.0" visible="false" />
+                        <Label fx:id="selected_assets_label" text="0 assets selected" />
                      </children>
                   </HBox>
                   <Button mnemonicParsing="false" onAction="#showZakatResultView" text="Calculate Zakat" />

@@ -24,7 +24,7 @@ public class DashboardController {
         try {
             sceneManager.showLoginView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle this
+            throw new RuntimeException(e);
         }
     }
 
@@ -32,7 +32,7 @@ public class DashboardController {
         try {
             sceneManager.showZakatView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle
+            throw new RuntimeException(e);
         }
     }
 
@@ -40,7 +40,7 @@ public class DashboardController {
         try {
             sceneManager.showAssetsView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle
+            throw new RuntimeException(e);
         }
     }
 }

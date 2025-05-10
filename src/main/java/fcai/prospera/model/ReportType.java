@@ -2,4 +2,4 @@ package fcai.prospera.model;
 
 public enum ReportType {
     PORTFOLIO
-} // TODO: consider removing the enum and making report types classes
+}

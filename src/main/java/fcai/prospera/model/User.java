@@ -11,11 +11,7 @@ public class User implements Serializable {
     private UUID id;
     private String username;
     private String email;
-    private String passwordHash; // TODO: how will this be done
-
-//    public User() {
-//        this.id = UUID.randomUUID();
-//    } TODO: consider removing this because an email is required to create a UUID that can be used as a primary key
+    private String passwordHash;
 
     public User(String username, String email, String passwordHash) {
         this.id = UUID.nameUUIDFromBytes(email.getBytes());
@@ -27,10 +23,6 @@ public class User implements Serializable {
     public UUID getId() {
         return id;
     }
-
-//    public void setId(UUID id) {
-//        this.id = id;
-//    } TODO: check if this is needed
 
     public String getUsername() {
         return username;

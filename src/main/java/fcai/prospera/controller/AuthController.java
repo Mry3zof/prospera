@@ -59,7 +59,7 @@ public class AuthController {
         try {
             sceneManager.showDashboardView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle this
+            throw new RuntimeException(e);
         }
     }
 
@@ -112,12 +112,12 @@ public class AuthController {
         }
 
         authService.signup(name, email, username, password);
-        User user = authService.login(username, password); // TODO: handle errors here
+        User user = authService.login(username, password);
 
         try {
             sceneManager.showDashboardView();
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: handle this
+            throw new RuntimeException(e);
         }
     }
 
