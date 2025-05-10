@@ -30,7 +30,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A controller for zakat views. Coordinates between zakat views and zakat service
+ */
 public class ZakatAndComplianceController {
+    /**
+     * A class to model selectable assets that appear in the zakat asset selection table
+     */
     public static class SelectableAsset {
 
         private final Asset asset;
@@ -104,6 +110,14 @@ public class ZakatAndComplianceController {
     private static double silverExchangeRate = 52.22;
     private static CurrencyItem exchangeCurrency = new CurrencyItem("EGP", "Egyptian Pound", "£");
 
+    /**
+     * Initializes the zakat view
+     * @param sceneManager : the scene manager
+     * @param authService : the auth service
+     * @param zakatService : the zakat service
+     * @param assetService : the asset service
+     * @param view : the view code, "MAIN", "SELECTION", or "RESULTS", corresponding to the main view, the zakat asset selection view, or the zakat result view, respectively
+     */
     public void init(SceneManager sceneManager, AuthService authService, ZakatAndComplianceService zakatService, AssetService assetService, String view) {
         this.sceneManager = sceneManager;
         this.authService = authService;
@@ -125,6 +139,9 @@ public class ZakatAndComplianceController {
         }
     }
 
+    /**
+     * Initializes the main zakat view
+     */
     private void initMainView() {
         gold_rate_field.setText(String.valueOf(goldExchangeRate));
         silver_rate_field.setText(String.valueOf(silverExchangeRate));
@@ -179,6 +196,9 @@ public class ZakatAndComplianceController {
         selected_assets_label.setText((selectedAssets == null ? 0 : selectedAssets.size()) + " assets selected");
     }
 
+    /**
+     * Initializes the zakat asset selection view
+     */
     private void initSelectionView() {
         select_col.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
         select_col.setCellFactory(CheckBoxTableCell.forTableColumn(select_col));
@@ -209,6 +229,9 @@ public class ZakatAndComplianceController {
         assets_table.setItems(assets);
     }
 
+    /**
+     * Initializes the zakat results view and calculates zakat
+     */
     private void initResultsView() {
         results_list.getItems().clear();
 
@@ -231,19 +254,32 @@ public class ZakatAndComplianceController {
         );
     }
 
+    /**
+     * An event handler for the save selection button, saves selected assets into the selectedAssets list and navigates to the zakat view
+     */
     public void onSaveSelection() {
         selectedAssets = assets_table.getItems().stream().filter(SelectableAsset::isSelected).map(SelectableAsset::getAsset).collect(Collectors.toList());
         showZakatView();
     }
 
+    /**
+     * An event handler for the select all button, marks all assets as selected
+     */
     public void onSelectAll() {
         assets_table.getItems().forEach(selected -> selected.setSelected(true));
     }
 
+    /**
+     * An event handler for the clear selection button, marks all assets as not selected
+     */
     public void onClearSelection() {
         assets_table.getItems().forEach(selected -> selected.setSelected(false));
     }
 
+    /**
+     * An event handler for the choose assets button, navigates to the zakat choose assets view
+     * @throws IOException : if an I/O error occurs
+     */
     public void showChooseAssetsView() {
         try {
             sceneManager.showZakatChooseAssetsView();
@@ -252,6 +288,10 @@ public class ZakatAndComplianceController {
         }
     }
 
+    /**
+     * An event handler for multiple buttons that navigate back to the main view
+     * @throws IOException : if an I/O error occurs
+     */
     public void showZakatView() {
         try {
             sceneManager.showZakatView();
@@ -260,6 +300,10 @@ public class ZakatAndComplianceController {
         }
     }
 
+    /**
+     * An event handler for the return to dashboard button that navigates back to the dashboard view
+     * @throws IOException : if an I/O error occurs
+     */
     public void showDashboardView() {
         try {
             sceneManager.showDashboardView();
@@ -268,6 +312,10 @@ public class ZakatAndComplianceController {
         }
     }
 
+    /**
+     * An event handler for the calculate zakat button, navigates to the zakat results view
+     * @throws IOException : if an I/O error occurs
+     */
     public void showZakatResultView() {
         if (!canCalculateZakat()) {
             error_label.setText("You must select at least one asset to calculate zakat");
@@ -281,6 +329,10 @@ public class ZakatAndComplianceController {
         }
     }
 
+    /**
+     * A helper method that checks whether the user can calculate zakat based on whether or not they have selected any assets
+     * @return true if the user can calculate zakat, false otherwise
+     */
     private Boolean canCalculateZakat() {
         return selectedAssets != null && !selectedAssets.isEmpty();
     }

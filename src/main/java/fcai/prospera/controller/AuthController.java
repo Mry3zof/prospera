@@ -12,6 +12,9 @@ import javafx.scene.text.Text;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * A controller for authentication views. Coordinates between authentication views and authentication service
+ */
 public class AuthController {
     private AuthService authService;
     private SceneManager sceneManager;
@@ -37,11 +40,21 @@ public class AuthController {
     @FXML
     public PasswordField password_field;
 
+    /**
+     * Initializes the controller
+     * @param sceneManager : the scene manager
+     * @param authService : the authentication service
+     */
     public void init(SceneManager sceneManager, AuthService authService) {
         this.sceneManager = sceneManager;
         this.authService = authService;
     }
 
+    /**
+     * Logs the user in if the password is correct
+     * @param username : entered username
+     * @param password : entered password
+     */
     private void login(String username, String password) {
         if (!authService.isPasswordCorrect(username, password)) {
             error_label.setText("Password is incorrect");
@@ -62,12 +75,22 @@ public class AuthController {
         }
     }
 
+    /**
+     * An event handler that handles the login button and fetches username and password input data
+     */
     public void login(){
         String username = username_field.getText();
         String password = password_field.getText();
         login(username, password);
     }
 
+    /**
+     * Signs the user up if the data is valid
+     * @param name : entered name
+     * @param email : entered email
+     * @param username : entered username
+     * @param password : entered password
+     */
     private void signup(String name, String email, String username, String password) {
         boolean error = false;
 
@@ -120,6 +143,9 @@ public class AuthController {
         }
     }
 
+    /**
+     * An event handler for the signup button, fetches input data from screen
+     */
     public void signup(){
         String username = username_field.getText() ;
         String email = email_field.getText() ;
@@ -127,6 +153,9 @@ public class AuthController {
         signup(username, email, username, password);
     }
 
+    /**
+     * Switches to the login screen, handles main login button and the Don't have an account button
+     */
     public void showLoginView() {
         try {
             sceneManager.showLoginView();
@@ -135,6 +164,9 @@ public class AuthController {
         }
     }
 
+    /**
+     * Switches to the signup screen, handles main signup button and the Already have an account button
+     */
     public void showSignupView() {
         try {
             sceneManager.showSignupview();

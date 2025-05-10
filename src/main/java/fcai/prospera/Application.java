@@ -12,6 +12,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Main application entry point
+ */
 public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {

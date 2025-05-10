@@ -31,6 +31,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Controller for managing the asset view.
+ * This class handles interactions for displaying, adding, editing, and removing assets,
+ * as well as calculating and displaying the user's net worth.
+ */
 public class AssetController {
     private AssetService assetService;
     private AuthService authService;
@@ -55,8 +60,17 @@ public class AssetController {
     private ObservableList<Asset> assetsList = FXCollections.observableArrayList();
     private static final String DEFAULT_NET_WORTH_CURRENCY = "USD";
 
+    /**
+     * Default constructor for the AssetController.
+     */
     public AssetController() { }
 
+    /**
+     * Initializes the controller class. This method is automatically called
+     * after the FXML file has been loaded. It sets up cell value factories for table columns,
+     * configures the actions column with edit and delete buttons, and initializes the
+     * net worth currency combo box.
+     */
     @FXML
     public void initialize() {
         if (nameColumn != null) nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
@@ -87,7 +101,7 @@ public class AssetController {
                     });
                     deleteBtn.setOnAction(event -> {
                         Asset asset = getTableView().getItems().get(getIndex());
-                        handleRemoveAssetClicked(asset); // Call to the method
+                        handleRemoveAssetClicked(asset);
                     });
                 }
                 @Override
@@ -114,6 +128,15 @@ public class AssetController {
         }
     }
 
+    /**
+     * Initializes the controller with necessary services and managers.
+     * This method should be called after the FXML view is loaded and controller instance is created.
+     * It sets up the asset table with data and refreshes the asset list.
+     *
+     * @param sceneManager The {@link SceneManager} for view navigation.
+     * @param authService The {@link AuthService} for user authentication.
+     * @param assetService The {@link AssetService} for asset data operations.
+     */
     public void init(SceneManager sceneManager, AuthService authService, AssetService assetService) {
         this.sceneManager = sceneManager;
         this.authService = authService;
@@ -126,6 +149,13 @@ public class AssetController {
         }
     }
 
+    /**
+     * Finds a {@link CurrencyItem} in a {@link CurrencyComboBox} by its currency code.
+     *
+     * @param code The currency code to search for (e.g., "USD").
+     * @param comboBox The {@link CurrencyComboBox} to search within.
+     * @return The {@link CurrencyItem} if found, or {@code null} otherwise.
+     */
     private CurrencyItem findCurrencyItemByCode(String code, CurrencyComboBox comboBox) {
         if (code == null || comboBox == null || comboBox.getItems() == null) return null;
         return comboBox.getItems().stream()
@@ -133,6 +163,12 @@ public class AssetController {
                 .findFirst().orElse(null);
     }
 
+    /**
+     * Displays an error alert dialog to the user.
+     *
+     * @param title The title of the error dialog.
+     * @param content The content message of the error.
+     */
     private void showErrorAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -141,6 +177,13 @@ public class AssetController {
         alert.showAndWait();
     }
 
+    /**
+     * Updates the net worth label with the calculated net worth for the given user ID
+     * in the currency selected in {@code netWorthCurrencyComboBox}.
+     *
+     * @param userId The ID of the user whose net worth is to be calculated.
+     *               If {@code null}, or if services are unavailable, "N/A" is displayed.
+     */
     private void updateNetWorth(UUID userId) {
         if (netWorthLabel == null || netWorthCurrencyComboBox == null) {
             System.err.println("Net worth UI components not initialized.");
@@ -156,7 +199,7 @@ public class AssetController {
         }
         CurrencyItem selectedDisplayCurrencyItem = netWorthCurrencyComboBox.getValue();
         String displayCurrencyCode = (selectedDisplayCurrencyItem != null) ? selectedDisplayCurrencyItem.getCode() : DEFAULT_NET_WORTH_CURRENCY;
-        if (selectedDisplayCurrencyItem == null) { // Ensure ComboBox has a value if it was null
+        if (selectedDisplayCurrencyItem == null) {
             CurrencyItem fallbackItem = findCurrencyItemByCode(DEFAULT_NET_WORTH_CURRENCY, netWorthCurrencyComboBox);
             if (fallbackItem == null && !netWorthCurrencyComboBox.getItems().isEmpty()) {
                 fallbackItem = netWorthCurrencyComboBox.getItems().get(0);
@@ -168,6 +211,12 @@ public class AssetController {
         netWorthLabel.setText(String.format("%.2f %s", netWorthInSelectedCurrency, displayCurrencyCode));
     }
 
+    /**
+     * Refreshes the list of assets displayed in the table for the current user.
+     * It fetches assets from the {@link AssetService} and updates the net worth.
+     * If no user is logged in or the service is unavailable, the table is cleared
+     * and net worth is updated accordingly.
+     */
     private void refreshAssets() {
         UUID currentUserId = (authService != null && authService.getCurrentUser() != null) ? authService.getCurrentUser().getId() : null;
         if (currentUserId == null) {
@@ -177,7 +226,7 @@ public class AssetController {
         }
         if (assetService == null) {
             if (assetsList != null) assetsList.clear();
-            updateNetWorth(currentUserId); // Will show service unavailable
+            updateNetWorth(currentUserId);
             return;
         }
         List<Asset> userAssets = assetService.getAssets(currentUserId);
@@ -185,7 +234,14 @@ public class AssetController {
         updateNetWorth(currentUserId);
     }
 
-    // DEFINITION OF handleRemoveAssetClicked
+    /**
+     * Handles the action of clicking the "Delete" button for an asset in the table.
+     * It prompts the user for confirmation before attempting to remove the asset
+     * via the {@link AssetService}. If successful, it calls {@link #assetsChanged()}
+     * to refresh the view.
+     *
+     * @param assetToRemove The {@link Asset} object to be removed.
+     */
     private void handleRemoveAssetClicked(Asset assetToRemove) {
         if (assetService == null) {
             showErrorAlert("Service Error", "Asset service is not initialized.");
@@ -199,7 +255,7 @@ public class AssetController {
         confirmationDialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 if (assetService.removeAsset(assetToRemove.getId())) {
-                    assetsChanged(); // This will call refreshAssets -> updateNetWorth
+                    assetsChanged();
                     System.out.println("Asset removed successfully: " + assetToRemove.getName());
                 } else {
                     showErrorAlert("Deletion Failed", "Could not delete the asset: " + assetToRemove.getName());
@@ -208,6 +264,15 @@ public class AssetController {
         });
     }
 
+    /**
+     * Handles the action of clicking the "Edit" button for an asset in the table.
+     * It opens a dialog pre-filled with the asset's current details, allowing the user
+     * to modify them. If changes are saved, the asset is updated via the
+     * {@link AssetService}, and {@link #assetsChanged()} is called to refresh the view.
+     * The dialog includes currency conversion if the currency is changed.
+     *
+     * @param assetToEdit The {@link Asset} object to be edited.
+     */
     private void handleEditAssetClicked(Asset assetToEdit) {
         if (assetService == null) {
             showErrorAlert("Service Error", "Asset service is not initialized.");
@@ -285,7 +350,14 @@ public class AssetController {
         });
     }
 
-    // Changed return type to void
+    /**
+     * Adds a new asset using the provided {@link Asset} object.
+     * This method is typically called after an asset is created through a form/dialog.
+     * It uses the {@link AssetService} to add the asset and then calls
+     * {@link #assetsChanged()} to refresh the view.
+     *
+     * @param asset The {@link Asset} object to be added.
+     */
     public void addAssetViaForm(Asset asset) {
         if (assetService == null) {
             showErrorAlert("Service Error", "Asset service not initialized.");
@@ -298,6 +370,13 @@ public class AssetController {
         }
     }
 
+    /**
+     * Handles the action of clicking the "Add Asset" button.
+     * It opens a dialog for the user to enter details for a new asset.
+     * If the user submits valid data, a new asset is created for the current user
+     * and passed to {@link #addAssetViaForm(Asset)}.
+     * The dialog includes currency conversion if the currency is changed during input.
+     */
     @FXML
     private void handleAddAsset() {
         if (authService == null || authService.getCurrentUser() == null) {
@@ -366,11 +445,20 @@ public class AssetController {
         result.ifPresent(this::addAssetViaForm);
     }
 
+    /**
+     * Handles the action of clicking the "Refresh" button.
+     * Calls {@link #refreshAssets()} to update the displayed asset list and net worth.
+     */
     @FXML
     public void handleRefreshAssets() {
         refreshAssets();
     }
 
+    /**
+     * Handles the action of clicking the "Return to Dashboard" button.
+     * Uses the {@link SceneManager} to navigate back to the dashboard view.
+     * Displays an error if navigation fails or if the {@link SceneManager} is not available.
+     */
     @FXML
     private void handleReturnToDashboard() {
         if (sceneManager != null) {
@@ -386,6 +474,10 @@ public class AssetController {
         }
     }
 
+    /**
+     * Signals that the underlying asset data has changed (e.g., an asset was added,
+     * edited, or removed). This method calls {@link #refreshAssets()} to update the UI.
+     */
     public void assetsChanged() {
         refreshAssets();
     }

@@ -9,10 +9,16 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Handles the business logic for assets
+ */
 public class AssetService {
     private final AssetRepository assetRepo;
 
-    // ... (existing constructor and other methods) ...
+    /**
+     *
+     * @param assetRepo : the asset repository
+     */
     public AssetService(AssetRepository assetRepo) {
         if (assetRepo == null) {
             throw new IllegalArgumentException("AssetRepository cannot be null.");
@@ -20,26 +26,52 @@ public class AssetService {
         this.assetRepo = assetRepo;
     }
 
+    /**
+     * Gets an asset by its ID
+     * @param assetId : the asset ID
+     * @return the asset
+     */
     public Asset getAssetById(UUID assetId) {
         if (assetId == null) return null;
         return assetRepo.getAssetById(assetId);
     }
 
+    /**
+     * Gets all assets for a user
+     * @param userId : the user ID
+     * @return a list of assets
+     */
     public List<Asset> getAssets(UUID userId) {
         if (userId == null) return Collections.emptyList();
         return assetRepo.getUserAssets(userId);
     }
 
+    /**
+     * Adds an asset
+     * @param asset : the asset to add
+     * @return true if the asset was added, false otherwise
+     */
     public boolean addAsset(Asset asset) {
         if (asset == null) return false;
         return assetRepo.addAsset(asset);
     }
 
+    /**
+     * Removes an asset
+     * @param assetId : the asset ID
+     * @return true if the asset was removed, false otherwise
+     */
     public boolean removeAsset(UUID assetId) {
         if (assetId == null) return false;
         return assetRepo.removeAsset(assetId);
     }
 
+    /**
+     * Updates an asset
+     * @param assetIdToUpdate : the asset ID to update
+     * @param newAssetData : the new asset data
+     * @return true if the asset was updated, false otherwise
+     */
     public boolean updateAsset(UUID assetIdToUpdate, Asset newAssetData) {
         if (assetIdToUpdate == null || newAssetData == null) {
             return false;
@@ -58,15 +90,27 @@ public class AssetService {
         return false;
     }
 
+    /**
+     * Updates the current value of an asset
+     * @param assetId : the asset ID
+     * @param newValue : the new value
+     * @return true if the asset was updated, false otherwise
+     */
     public boolean updateAssetCurrentValue(UUID assetId, BigDecimal newValue) {
         if (assetId == null || newValue == null) return false;
         return assetRepo.updateCurrentValue(assetId, newValue);
     }
 
+    /**
+     * Calculates the total value of a list of assets.
+     * WARNING: This method directly sums values and does NOT perform currency conversion.
+     * Use calculateValuationInBase for a currency-converted sum.
+     *
+     * @param assets The list of assets.
+     * @return The raw sum of current values of the assets.
+     */
     public BigDecimal calculateValuation(List<Asset> assets) {
         if (assets == null || assets.isEmpty()) return BigDecimal.ZERO;
-        // This method still sums directly. It might be less used if
-        // calculateUserNetWorthInBase is the primary way to get total value.
         return assets.stream()
                 .filter(asset -> asset != null && asset.getCurrentValue() != null)
                 .map(Asset::getCurrentValue)
@@ -126,8 +170,7 @@ public class AssetService {
                         System.err.println("Could not convert asset '" + asset.getName() +
                                 "' from " + assetCurrencyCode + " to " + baseCurrencyCode +
                                 ": " + e.getMessage());
-                        // Optionally, skip this asset or add 0, or rethrow if critical
-                        valueInBase = BigDecimal.ZERO; // Or handle as an error
+                        valueInBase = BigDecimal.ZERO;
                     }
                 }
                 totalNetWorthInBase = totalNetWorthInBase.add(valueInBase);
@@ -136,7 +179,12 @@ public class AssetService {
         return totalNetWorthInBase;
     }
 
-
+    /**
+     * Calculates the performance of each asset in a list.
+     * WARNING: This method directly sums values and does NOT perform currency conversion.
+     *
+     * @param assets The list of assets.
+     */
     public Map<UUID, BigDecimal> calculatePerformance(List<Asset> assets) {
         if (assets == null || assets.isEmpty()) return Collections.emptyMap();
         return assets.stream()
@@ -149,13 +197,23 @@ public class AssetService {
                 ));
     }
 
+    /**
+     * Calculates the percentage of each asset type in a user's assets.
+     * WARNING: This method directly sums values and does NOT perform currency conversion.
+     *
+     * @param userId The ID of the user.
+     * @return A map of asset Types to their percentages.
+     */
     public Map<AssetType, BigDecimal> getAssetDistributionForUser(UUID userId) {
         if (userId == null) return Collections.emptyMap();
-        // This would also need currency conversion for a meaningful distribution
-        // if assets are in mixed currencies.
         return assetRepo.getUserAssetDistribution(userId);
     }
 
+    /**
+     * Gets all non-sharia compliant assets for a user
+     * @param userId : the user ID
+     * @return a list of assets
+     */
     public List<Asset> getNonShariaCompliantAssetsForUser(UUID userId) {
         if (userId == null) return Collections.emptyList();
         return assetRepo.getNonShariaCompliantAssets(userId);

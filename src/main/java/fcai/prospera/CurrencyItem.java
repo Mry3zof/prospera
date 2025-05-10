@@ -1,5 +1,8 @@
 package fcai.prospera;
 
+/**
+ * A class to model currency data for display in CurrenyComboBox
+ */
 public class CurrencyItem {
     private final String code;
     private final String name;

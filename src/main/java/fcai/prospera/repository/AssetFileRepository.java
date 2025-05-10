@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+/**
+ * Implements the AssetRepository interface using a file to store assets
+ */
 public class AssetFileRepository implements AssetRepository {
 
     private final String ASSETS_FILE_PATH = "data/assets.ser";
@@ -20,6 +23,9 @@ public class AssetFileRepository implements AssetRepository {
         loadAssets();
     }
 
+    /**
+     * Loads assets from file
+     */
     private void loadAssets() {
         if (!assetsStorage.exists() || assetsStorage.length() == 0) {
             return;
@@ -33,6 +39,9 @@ public class AssetFileRepository implements AssetRepository {
         }
     }
 
+    /**
+     * Saves assets to file
+     */
     private void saveAssets() {
         try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(assetsStorage))) {
             objectOut.writeObject(assets);

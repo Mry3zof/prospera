@@ -4,6 +4,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 
+/**
+ * A class to model user data
+ */
 public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
