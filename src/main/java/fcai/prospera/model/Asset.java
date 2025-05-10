@@ -9,6 +9,9 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * A class to model asset data
+ */
 public class Asset implements Serializable { // Ensure Asset implements Serializable
     @Serial
     private static final long serialVersionUID = 2L; // Changed version UID due to serialization changes
@@ -42,6 +45,9 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
         setCurrency(currency);
     }
 
+    /**
+     * Method to initialize transient properties for JavaFX
+     */
     private void initializeProperties() {
         this.userId = new SimpleObjectProperty<>();
         this.name = new SimpleStringProperty();
@@ -53,7 +59,11 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
         this.zakatable = new SimpleBooleanProperty();
     }
 
-    // Custom serialization methods
+    /**
+     * Serializes object
+     * @param out : output stream
+     * @throws IOException : if an I/O error occurs
+     */
     @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject(); // Writes non-static and non-transient fields (like 'id')
@@ -68,6 +78,12 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
         out.writeObject(getCurrency());
     }
 
+    /**
+     * Deserializes object
+     * @param in : input stream
+     * @throws IOException : if an I/O error occurs
+     * @throws ClassNotFoundException : if class not found
+     */
     @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject(); // Reads non-static and non-transient fields (like 'id')
