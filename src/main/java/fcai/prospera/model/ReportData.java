@@ -5,25 +5,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class represents the data for a report.
+ */
 public class ReportData {
     private User user;
     private ReportType type;
     private List<Asset> assets;
-    private Date generatedAt;
     private BigDecimal netWorth;
     private Map<AssetType, BigDecimal> assetDistribution;
 
-    // Constructors
-    public ReportData() {
-        this.generatedAt = new Date();
-    }
+    public ReportData() {}
 
     public ReportData(User user, ReportType type, List<Asset> assets, BigDecimal netWorth,
                       Map<AssetType, BigDecimal> assetDistribution) {
         this.user = user;
         this.type = type;
         this.assets = assets;
-        this.generatedAt = new Date();
         this.netWorth = netWorth;
         this.assetDistribution = assetDistribution;
     }
@@ -51,14 +49,6 @@ public class ReportData {
 
     public void setAssets(List<Asset> assets) {
         this.assets = assets;
-    }
-
-    public Date getGeneratedAt() {
-        return generatedAt;
-    }
-
-    public void setGeneratedAt(Date generatedAt) {
-        this.generatedAt = generatedAt;
     }
 
     public BigDecimal getNetWorth() {
