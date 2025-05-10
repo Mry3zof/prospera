@@ -13,18 +13,30 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-
+/**
+ * A controller for reports view. Coordinates between reports view and report generation service
+ */
 public class ReportsController {
     private SceneManager sceneManager;
     private ReportGenerationService reportService;
     private AuthService authService;
 
+    /**
+     * Initializes the reports' controller.
+     * @param sceneManager : the scene manager
+     * @param authService : the authentication service
+     * @param reportService : the report generation service
+     */
     public void init(SceneManager sceneManager, AuthService authService, ReportGenerationService reportService) {
         this.sceneManager = sceneManager;
         this.reportService = reportService;
         this.authService = authService;
     }
 
+    /**
+     * Handles the "Generate PDF" button click event.
+     * Generates a portfolio report in PDF format for the current user and prompts the user to save the report to a file.
+     */
     @FXML
     private void handleGeneratePDF() {
         User currentUser = authService.getCurrentUser();
@@ -32,6 +44,10 @@ public class ReportsController {
         saveReportToFile(report, "PortfolioReport.pdf");
     }
 
+    /**
+     * Handles the "Generate Excel" button click event.
+     * Generates a portfolio report in Excel format for the current user and prompts the user to save the report to a file.
+     */
     @FXML
     private void handleGenerateExcel() {
         User currentUserId = authService.getCurrentUser();
@@ -39,6 +55,11 @@ public class ReportsController {
         saveReportToFile(report, "PortfolioReport.xlsx");
     }
 
+    /**
+     * Saves the given report to a file selected by the user.
+     * @param report : the report to save
+     * @param defaultFileName : the default file name to use if the user doesn't select one
+     */
     private void saveReportToFile(Report report, String defaultFileName) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialFileName(defaultFileName);
@@ -46,13 +67,6 @@ public class ReportsController {
         if (file != null) {
             try (FileOutputStream fos = new FileOutputStream(file)) {
                 byte[] reportData = report.getData();
-
-                // TODO: remove
-                System.out.println("PDF size: " + reportData.length + " bytes");
-                if (reportData.length == 0) {
-                    throw new IOException("Empty PDF data!");
-                }
-
                 fos.write(reportData);
             }
             catch (IOException e) {
@@ -61,6 +75,10 @@ public class ReportsController {
         }
     }
 
+    /**
+     * An event handler for the return to dashboard button that navigates back to the dashboard view
+     * @throws IOException : if an I/O error occurs
+     */
     public void showDashboardView() {
         try {
             sceneManager.showDashboardView();
