@@ -9,5 +9,4 @@ module fcai.prospera {
     exports fcai.prospera.controller;
     exports fcai.prospera.model;
     exports fcai.prospera.service;
-    exports fcai.prospera.view;
 }
