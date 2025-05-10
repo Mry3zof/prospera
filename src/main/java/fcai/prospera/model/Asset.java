@@ -66,7 +66,6 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
         out.writeObject(getPurchaseDate());
         out.writeObject(getCurrentValue());
         out.writeObject(getCurrency());
-        out.writeBoolean(isZakatable());
     }
 
     @Serial
@@ -84,7 +83,6 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
         setPurchaseDate((Date) in.readObject());
         setCurrentValue((BigDecimal) in.readObject());
         setCurrency((Currency) in.readObject());
-        setZakatable(in.readBoolean());
     }
 
 
@@ -114,8 +112,6 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
     public void setCurrentValue(BigDecimal currentValue) { this.currentValue.set(currentValue); }
     public Currency getCurrency() { return currency.get(); }
     public void setCurrency(Currency currency) { this.currency.set(currency); }
-    public boolean isZakatable() { return zakatable.get(); }
-    public void setZakatable(boolean zakatable) { this.zakatable.set(zakatable); }
 
     public BigDecimal calculateROI() {
         if (getPurchasePrice() == null || getPurchasePrice().compareTo(BigDecimal.ZERO) == 0 || getCurrentValue() == null) {

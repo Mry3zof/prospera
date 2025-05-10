@@ -53,7 +53,6 @@ public class AssetService {
             assetToUpdate.setPurchaseDate(newAssetData.getPurchaseDate());
             assetToUpdate.setCurrentValue(newAssetData.getCurrentValue());
             assetToUpdate.setCurrency(newAssetData.getCurrency());
-            assetToUpdate.setZakatable(newAssetData.isZakatable());
             return assetRepo.updateAsset(assetIdToUpdate, assetToUpdate);
         }
         return false;
