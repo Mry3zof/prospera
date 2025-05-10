@@ -43,7 +43,6 @@ public class AssetController {
     @FXML private TableColumn<Asset, BigDecimal> currentValueColumn;
     @FXML private TableColumn<Asset, Currency> currencyColumn;
     @FXML private TableColumn<Asset, Date> purchaseDateColumn;
-    @FXML private TableColumn<Asset, Boolean> zakatableColumn;
     @FXML private TableColumn<Asset, Void> actionsColumn;
 
     @FXML private Label netWorthLabel;
@@ -75,7 +74,6 @@ public class AssetController {
             });
         }
         if (purchaseDateColumn != null) purchaseDateColumn.setCellValueFactory(cellData -> cellData.getValue().purchaseDateProperty());
-        if (zakatableColumn != null) zakatableColumn.setCellValueFactory(cellData -> cellData.getValue().zakatableProperty());
 
         if (actionsColumn != null) {
             actionsColumn.setCellFactory(param -> new TableCell<>() {
@@ -242,15 +240,12 @@ public class AssetController {
             }
         }
         dialogCurrencyPicker.setValue(initialDialogCurrencyItem);
-        CheckBox zakatableCheckBox = new CheckBox("Is Zakatable?");
-        zakatableCheckBox.setSelected(assetToEdit.isZakatable());
         grid.add(new Label("Name:"), 0, 0); grid.add(nameField, 1, 0);
         grid.add(new Label("Type:"), 0, 1); grid.add(typeComboBox, 1, 1);
         grid.add(new Label("Purchase Price:"), 0, 2); grid.add(purchasePriceField, 1, 2);
         grid.add(new Label("Purchase Date:"), 0, 3); grid.add(purchaseDatePicker, 1, 3);
         grid.add(new Label("Current Value:"), 0, 4); grid.add(currentValueField, 1, 4);
         grid.add(new Label("Currency:"), 0, 5); grid.add(dialogCurrencyPicker, 1, 5);
-        grid.add(zakatableCheckBox, 1, 6);
         ObjectProperty<CurrencyItem> currentDialogFieldsCurrency = new SimpleObjectProperty<>(dialogCurrencyPicker.getValue());
         dialogCurrencyPicker.valueProperty().addListener((obs, oldCI, newCI) -> {
             if (oldCI != null && newCI != null && !oldCI.getCode().equals(newCI.getCode())) {
@@ -275,8 +270,7 @@ public class AssetController {
                     return new Asset(assetToEdit.getUserId(), nameField.getText().trim(), typeComboBox.getValue(),
                             new BigDecimal(purchasePriceField.getText().trim()),
                             (purchaseDatePicker.getValue() != null) ? Date.from(purchaseDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()) : null,
-                            new BigDecimal(currentValueField.getText().trim()), Currency.getInstance(selCurItem.getCode()),
-                            zakatableCheckBox.isSelected());
+                            new BigDecimal(currentValueField.getText().trim()), Currency.getInstance(selCurItem.getCode()));
                 } catch (Exception e) { showErrorAlert("Invalid Input", "Error processing input: " + e.getMessage()); return null;}
             }
             return null;
@@ -332,14 +326,12 @@ public class AssetController {
             defaultDialogCurrency = dialogCurrencyPicker.getItems().get(0);
         }
         dialogCurrencyPicker.setValue(defaultDialogCurrency);
-        CheckBox zakatableCheckBox = new CheckBox("Is Zakatable?");
         grid.add(new Label("Name:"), 0, 0); grid.add(nameField, 1, 0);
         grid.add(new Label("Type:"), 0, 1); grid.add(typeComboBox, 1, 1);
         grid.add(new Label("Purchase Price:"), 0, 2); grid.add(purchasePriceField, 1, 2);
         grid.add(new Label("Purchase Date:"), 0, 3); grid.add(purchaseDatePicker, 1, 3);
         grid.add(new Label("Current Value:"), 0, 4); grid.add(currentValueField, 1, 4);
         grid.add(new Label("Currency:"), 0, 5); grid.add(dialogCurrencyPicker, 1, 5);
-        grid.add(zakatableCheckBox, 1, 6);
         ObjectProperty<CurrencyItem> currentDialogFieldsCurrency = new SimpleObjectProperty<>(dialogCurrencyPicker.getValue());
         dialogCurrencyPicker.valueProperty().addListener((obs, oldCI, newCI) -> {
             if (oldCI != null && newCI != null && !oldCI.getCode().equals(newCI.getCode())) {
@@ -365,8 +357,7 @@ public class AssetController {
                     return new Asset(currentUserId, nameField.getText().trim(), typeComboBox.getValue(),
                             new BigDecimal(purchasePriceField.getText().trim()),
                             (purchaseDatePicker.getValue() != null) ? Date.from(purchaseDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()) : new Date(),
-                            new BigDecimal(currentValueField.getText().trim()), Currency.getInstance(selCurItem.getCode()),
-                            zakatableCheckBox.isSelected());
+                            new BigDecimal(currentValueField.getText().trim()), Currency.getInstance(selCurItem.getCode()));
                 } catch (Exception e) { showErrorAlert("Invalid Input", "Error processing input: " + e.getMessage()); return null;}
             }
             return null;

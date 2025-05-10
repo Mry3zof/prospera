@@ -31,8 +31,7 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
     }
 
     public Asset(UUID userId, String name, AssetType type, BigDecimal purchasePrice,
-                 Date purchaseDate, BigDecimal currentValue, Currency currency,
-                 boolean isZakatable) {
+                 Date purchaseDate, BigDecimal currentValue, Currency currency) {
         this(); // Call to the default constructor to initialize id and properties
         setUserId(userId);
         setName(name);
@@ -41,7 +40,6 @@ public class Asset implements Serializable { // Ensure Asset implements Serializ
         setPurchaseDate(purchaseDate);
         setCurrentValue(currentValue);
         setCurrency(currency);
-        setZakatable(isZakatable);
     }
 
     private void initializeProperties() {

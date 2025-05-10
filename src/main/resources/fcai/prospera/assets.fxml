@@ -12,10 +12,10 @@
             <Button text="Add Asset" fx:id="addButton" onAction="#handleAddAsset"/>
             <Button text="Refresh" fx:id="refreshButton" onAction="#handleRefreshAssets"/>
             <Button text="Return to dashboard" fx:id="returnToDashBoard" onAction="#handleReturnToDashboard"/>
-            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/> <!-- This spacer might push the net worth too far right, adjust if needed -->
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
             <Label text="Net Worth:"/>
             <Label fx:id="netWorthLabel" text="0.00" style="-fx-font-weight: bold;"/>
-            <CurrencyComboBox fx:id="netWorthCurrencyComboBox" prefWidth="100.0"/> <!-- ADDED THE COMBOBOX HERE -->
+            <CurrencyComboBox fx:id="netWorthCurrencyComboBox" prefWidth="100.0"/>
         </ToolBar>
     </top>
 
@@ -40,11 +40,7 @@
                 <TableColumn fx:id="purchaseDateColumn" text="Purchase Date" prefWidth="120">
                     <cellValueFactory><PropertyValueFactory property="purchaseDate"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="zakatableColumn" text="Zakatable?" prefWidth="80">
-                    <cellValueFactory><PropertyValueFactory property="zakatable"/></cellValueFactory>
-                </TableColumn>
                 <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120">
-                    <!-- Cell factory will be set in the controller -->
                 </TableColumn>
             </columns>
         </TableView>
