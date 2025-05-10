@@ -5,6 +5,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.UUID;
 
+/**
+ * An implementation of UserRepository to handle file database communication for user data
+ */
 public class UserFileRepository implements UserRepository {
 
     private final String USERS_FILE_PATH = "data/users.ser";
@@ -17,6 +20,9 @@ public class UserFileRepository implements UserRepository {
         loadUsers();
     }
 
+    /**
+     * Loads users from file
+     */
     private void loadUsers() {
         if (!usersStorage.exists() || usersStorage.length() == 0) {
             return;
@@ -36,6 +42,9 @@ public class UserFileRepository implements UserRepository {
         }
     }
 
+    /**
+     * Saves users to file
+     */
     private void saveUsers() {
         try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(usersStorage))) {
             objectOut.writeObject(users);
