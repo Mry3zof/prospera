@@ -11,10 +11,6 @@ import java.io.IOException;
 public class ExcelReport implements Report {
     private byte[] data;
 
-    public ExcelReport() {
-
-    }
-
     // TODO: Add distribution
     @Override
     public void generateData(ReportData reportData) {

@@ -8,8 +8,6 @@ import java.util.Map;
 public class ReportData {
     private User user;
     private ReportType type;
-    private Date startDate;
-    private Date endDate;
     private List<Asset> assets;
     private Date generatedAt;
     private BigDecimal netWorth;
@@ -20,13 +18,10 @@ public class ReportData {
         this.generatedAt = new Date();
     }
 
-    public ReportData(User user, ReportType type, Date startDate, Date endDate,
-                      List<Asset> assets, BigDecimal netWorth,
+    public ReportData(User user, ReportType type, List<Asset> assets, BigDecimal netWorth,
                       Map<AssetType, BigDecimal> assetDistribution) {
         this.user = user;
         this.type = type;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.assets = assets;
         this.generatedAt = new Date();
         this.netWorth = netWorth;
@@ -48,22 +43,6 @@ public class ReportData {
 
     public void setType(ReportType type) {
         this.type = type;
-    }
-
-    public Date getStartDate() {
-        return startDate != null ? startDate : new Date();
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate != null ? endDate : new Date();
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     public List<Asset> getAssets() {
