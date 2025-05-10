@@ -3,7 +3,6 @@ package fcai.prospera.controller;
 import fcai.prospera.SceneManager;
 import fcai.prospera.model.User;
 import fcai.prospera.service.AuthService;
-import fcai.prospera.view.AuthView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;

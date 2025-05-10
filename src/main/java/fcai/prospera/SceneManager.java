@@ -9,7 +9,6 @@ import fcai.prospera.service.AssetService;
 import fcai.prospera.service.AuthService;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.ZakatAndComplianceService;
-import fcai.prospera.view.AssetView; // Assuming AssetView interface/class
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

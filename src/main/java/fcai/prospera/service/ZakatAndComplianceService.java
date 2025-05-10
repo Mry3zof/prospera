@@ -24,10 +24,6 @@ public class ZakatAndComplianceService {
         return total.compareTo(BigDecimal.valueOf(nisab)) >= 0 ? total.multiply(BigDecimal.valueOf(ZAKAT_PERCENTAGE)) : BigDecimal.ZERO;
     }
 
-    public List<Asset> getZakatableAssets(UUID userId) {
-        return Collections.emptyList();
-    }
-
     static public double getGoldNisab(double goldExchangeRate) {
         return goldExchangeRate * GOLD_NISAB_WEIGHT;
     }

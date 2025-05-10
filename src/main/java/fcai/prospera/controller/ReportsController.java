@@ -3,19 +3,15 @@ package fcai.prospera.controller;
 import fcai.prospera.model.ReportType;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.AuthService;
-import fcai.prospera.view.ReportsView;
 
 public class ReportsController {
     private final ReportGenerationService reportService;
     private final AuthService authService;
-    private final ReportsView reportsView;
 
     public ReportsController(ReportGenerationService reportService,
-                             AuthService authService,
-                             ReportsView reportsView) {
+                             AuthService authService) {
         this.reportService = reportService;
         this.authService = authService;
-        this.reportsView = reportsView;
     }
 
 //    public byte[] generateReport(ReportType type, String format) {

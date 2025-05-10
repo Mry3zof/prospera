@@ -9,7 +9,6 @@ import fcai.prospera.service.AssetService;
 import fcai.prospera.service.ZakatAndComplianceService;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.AuthService;
-import fcai.prospera.view.ZakatAndComplianceView;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
