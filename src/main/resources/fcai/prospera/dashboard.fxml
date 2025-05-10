@@ -34,7 +34,7 @@
                </font>
             </Button>
             <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" visible="false" />
-            <Button minWidth="200.0" mnemonicParsing="false" text="Reports Generation">
+            <Button minWidth="200.0" mnemonicParsing="false" onAction="#showReportsView" text="Reports Generation">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>

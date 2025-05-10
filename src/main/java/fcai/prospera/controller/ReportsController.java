@@ -1,17 +1,31 @@
 package fcai.prospera.controller;
 
+import fcai.prospera.SceneManager;
 import fcai.prospera.model.ReportType;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.AuthService;
+import javafx.fxml.FXML;
+
+import java.io.IOException;
+
 
 public class ReportsController {
-    private final ReportGenerationService reportService;
-    private final AuthService authService;
+    private SceneManager sceneManager;
+    private ReportGenerationService reportService;
+    private AuthService authService;
 
-    public ReportsController(ReportGenerationService reportService,
-                             AuthService authService) {
+    public void init(SceneManager sceneManager, AuthService authService, ReportGenerationService reportService) {
+        this.sceneManager = sceneManager;
         this.reportService = reportService;
         this.authService = authService;
+    }
+
+    public void showDashboardView() {
+        try {
+            sceneManager.showDashboardView();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 //    public byte[] generateReport(ReportType type, String format) {

@@ -43,4 +43,12 @@ public class DashboardController {
             throw new RuntimeException(e);
         }
     }
+
+    public void showReportsView() {
+        try {
+            sceneManager.showReportsView();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

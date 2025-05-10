@@ -4,6 +4,7 @@ import fcai.prospera.controller.AssetController;
 import fcai.prospera.controller.AuthController;
 import fcai.prospera.controller.DashboardController;
 import fcai.prospera.controller.ZakatAndComplianceController;
+import fcai.prospera.controller.ReportsController;
 // import fcai.prospera.repository.AssetRepository; // Not used directly here
 import fcai.prospera.service.AssetService;
 import fcai.prospera.service.AuthService;
@@ -118,6 +119,12 @@ public class SceneManager {
     public void showZakatResultView() throws IOException {
         switchScene("zakat-result.fxml", controller -> {
             ((ZakatAndComplianceController) controller).init(this, authService, zakatService, assetService, "RESULTS");
+        });
+    }
+
+    public void showReportsView() throws IOException {
+        switchScene("reports.fxml", controller -> {
+            ((ReportsController) controller).init(this, authService, reportService);
         });
     }
 }
