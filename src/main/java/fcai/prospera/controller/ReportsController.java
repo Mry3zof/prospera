@@ -1,11 +1,16 @@
 package fcai.prospera.controller;
 
 import fcai.prospera.SceneManager;
+import fcai.prospera.model.Report;
 import fcai.prospera.model.ReportType;
+import fcai.prospera.model.User;
 import fcai.prospera.service.ReportGenerationService;
 import fcai.prospera.service.AuthService;
 import javafx.fxml.FXML;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
@@ -20,28 +25,48 @@ public class ReportsController {
         this.authService = authService;
     }
 
-    public void showDashboardView() {
-        try {
-            sceneManager.showDashboardView();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    @FXML
+    private void handleGeneratePDF() {
+        User currentUser = authService.getCurrentUser();
+        Report report = reportService.generateReport(currentUser, ReportType.PORTFOLIO, "PDF");
+        saveReportToFile(report, "PortfolioReport.pdf");
+    }
+
+    @FXML
+    private void handleGenerateExcel() {
+        User currentUserId = authService.getCurrentUser();
+        Report report = reportService.generateReport(currentUserId, ReportType.PORTFOLIO, "Excel");
+        saveReportToFile(report, "PortfolioReport.xlsx");
+    }
+
+    private void saveReportToFile(Report report, String defaultFileName) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName(defaultFileName);
+        File file = fileChooser.showSaveDialog(sceneManager.getStage());
+        if (file != null) {
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                byte[] reportData = report.getData();
+
+                // TODO: remove
+                System.out.println("PDF size: " + reportData.length + " bytes");
+                if (reportData.length == 0) {
+                    throw new IOException("Empty PDF data!");
+                }
+
+                fos.write(reportData);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-//    public byte[] generateReport(ReportType type, String format) {
-//        byte[] report = reportService.generateReport(
-//                authService.getCurrentUser().getId(),
-//                type,
-//                format
-//        );
-//        reportsView.displayReport("Report generated");
-//        return report;
-//    }
-//
-//    public boolean exportReport(String format) {
-//        return reportService.exportReport(
-//                authService.getCurrentUser().getId(),
-//                format
-//        );
-//    }
+    public void showDashboardView() {
+        try {
+            sceneManager.showDashboardView();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

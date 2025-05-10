@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -126,5 +127,9 @@ public class SceneManager {
         switchScene("reports.fxml", controller -> {
             ((ReportsController) controller).init(this, authService, reportService);
         });
+    }
+
+    public Window getStage() {
+        return stage;
     }
 }

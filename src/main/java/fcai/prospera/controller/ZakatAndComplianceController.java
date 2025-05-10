@@ -23,7 +23,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;

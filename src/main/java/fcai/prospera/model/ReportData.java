@@ -51,7 +51,7 @@ public class ReportData {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return startDate != null ? startDate : new Date();
     }
 
     public void setStartDate(Date startDate) {
@@ -59,7 +59,7 @@ public class ReportData {
     }
 
     public Date getEndDate() {
-        return endDate;
+        return endDate != null ? endDate : new Date();
     }
 
     public void setEndDate(Date endDate) {

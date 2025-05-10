@@ -5,6 +5,7 @@ import fcai.prospera.model.AssetType;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class AssetFileRepository implements AssetRepository {
@@ -115,9 +116,21 @@ public class AssetFileRepository implements AssetRepository {
 
     @Override
     public Map<AssetType, BigDecimal> getUserAssetDistribution(UUID userId) {
-        return Map.of();
+        List<Asset> userAssets = getUserAssets(userId);
+        BigDecimal totalNetWorth = calculateNetWorth(userId);
+        Map<AssetType, BigDecimal> distribution = new HashMap<>();
+
+        for (Asset asset : userAssets) {
+            AssetType type = asset.getType();
+            BigDecimal assetValue = asset.getCurrentValue();
+            BigDecimal percentage = assetValue.divide(totalNetWorth, 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+            distribution.put(type, distribution.getOrDefault(type, BigDecimal.ZERO).add(percentage));
+        }
+        return distribution;
     }
 
+    // TODO: remove?
     @Override
     public List<Asset> getNonShariaCompliantAssets(UUID userId) {
         return List.of();

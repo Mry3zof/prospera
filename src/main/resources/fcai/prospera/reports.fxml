@@ -22,13 +22,13 @@
                </VBox.margin>
             </Label>
             <Separator orientation="VERTICAL" prefHeight="12.0" prefWidth="200.0" visible="false" />
-            <Button minWidth="200.0" mnemonicParsing="false" text="Generate PDF Report">
+            <Button minWidth="200.0" mnemonicParsing="false" onAction="#handleGeneratePDF" text="Generate PDF Report">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Button>
             <Separator orientation="VERTICAL" prefHeight="12.0" prefWidth="200.0" visible="false" />
-            <Button minWidth="200.0" mnemonicParsing="false" text="Generate Excel Report">
+            <Button minWidth="200.0" mnemonicParsing="false" onAction="#handleGenerateExcel" text="Generate Excel Report">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
