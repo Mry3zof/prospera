@@ -208,14 +208,4 @@ public class AssetService {
         if (userId == null) return Collections.emptyMap();
         return assetRepo.getUserAssetDistribution(userId);
     }
-
-    /**
-     * Gets all non-sharia compliant assets for a user
-     * @param userId : the user ID
-     * @return a list of assets
-     */
-    public List<Asset> getNonShariaCompliantAssetsForUser(UUID userId) {
-        if (userId == null) return Collections.emptyList();
-        return assetRepo.getNonShariaCompliantAssets(userId);
-    }
 }
