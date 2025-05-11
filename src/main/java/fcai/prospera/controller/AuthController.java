@@ -92,44 +92,46 @@ public class AuthController {
      * @param password : entered password
      */
     private void signup(String name, String email, String username, String password) {
-        boolean error = false;
+        boolean username_err = false;
+        boolean email_err = false;
+        boolean password_err = false;
 
         if (!authService.isUsernameValid(username)) {
             username_error.setText("Your username should be between 3-20 characters, no spaces or special characters");
-            error = true;
+            username_err = true;
         }else{
             username_error.setText("");
         }
 
         if (!authService.isEmailValid(email)) {
             email_error.setText("Your Email should look something like: example@Email.com");
-            error = true;
+            email_err = true;
         }else{
             email_error.setText("");
         }
 
         if (!authService.isPasswordValid(password)) {
             password_error.setText("Password should be >= 8 characters with at least one digit");
-            error = true;
-        }else{
+            password_err = true;
+        } else {
             password_error.setText("");
         }
 
         if (authService.doesUsernameExist(username)) {
             username_error.setText("Username already exists");
-            error = true;
-        }else{
+            username_err = true;
+        } else if (!username_err) {
             username_error.setText("");
         }
 
         if (authService.doesEmailExist(email)) {
             email_error.setText("Email already exists");
-            error = true;
-        }else{
+            email_err = true;
+        } else if (!email_err) {
             email_error.setText("");
         }
 
-        if (error) {
+        if (username_err || email_err || password_err) {
             return;
         }
 
