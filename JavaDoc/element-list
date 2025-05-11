@@ -1,7 +1,0 @@
-module:fcai.prospera
-fcai.prospera
-fcai.prospera.controller
-fcai.prospera.model
-fcai.prospera.repository
-fcai.prospera.service
-fcai.prospera.view
