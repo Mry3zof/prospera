@@ -123,7 +123,7 @@ public class AuthController {
         } else if (!username_err) {
             username_error.setText("");
         }
-
+        //final
         if (authService.doesEmailExist(email)) {
             email_error.setText("Email already exists");
             email_err = true;
