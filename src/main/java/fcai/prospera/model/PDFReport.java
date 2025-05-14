@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class PDFReport implements Report {
      */
     private float createHeader(PDPageContentStream contentStream, ReportData reportData, float yPosition)
             throws IOException {
-        contentStream.setFont(PDType1Font.HELVETICA_BOLD, HEADER_FONT_SIZE);
+        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), HEADER_FONT_SIZE);
         contentStream.beginText();
         contentStream.newLineAtOffset(LEFT_MARGIN, yPosition);
 
@@ -87,7 +88,7 @@ public class PDFReport implements Report {
      * @return the updated y position after writing the table header.
      */
     private float createTableHeader(PDPageContentStream contentStream, float yPosition) throws IOException {
-        contentStream.setFont(PDType1Font.HELVETICA_BOLD, TABLE_FONT_SIZE);
+        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), TABLE_FONT_SIZE);
         contentStream.beginText();
         contentStream.newLineAtOffset(LEFT_MARGIN, yPosition);
 
@@ -117,7 +118,7 @@ public class PDFReport implements Report {
      */
     private float createAssetRows(PDPageContentStream contentStream, ReportData reportData, float yPosition)
             throws IOException {
-        contentStream.setFont(PDType1Font.HELVETICA, TABLE_FONT_SIZE);
+        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), TABLE_FONT_SIZE);
 
         for (Asset asset : reportData.getAssets()) {
             contentStream.beginText();
@@ -146,14 +147,14 @@ public class PDFReport implements Report {
      */
     private void createAssetDistribution(PDPageContentStream contentStream, ReportData reportData, float yPosition)
             throws IOException {
-        contentStream.setFont(PDType1Font.HELVETICA_BOLD, HEADER_FONT_SIZE);
+        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), HEADER_FONT_SIZE);
         contentStream.beginText();
         contentStream.newLineAtOffset(LEFT_MARGIN, yPosition);
         contentStream.showText("Asset Distribution:");
         contentStream.endText();
 
         yPosition -= LINE_HEIGHT;
-        contentStream.setFont(PDType1Font.HELVETICA, TABLE_FONT_SIZE);
+        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), TABLE_FONT_SIZE);
 
         for (Map.Entry<AssetType, BigDecimal> entry : reportData.getAssetDistribution().entrySet()) {
             contentStream.beginText();
